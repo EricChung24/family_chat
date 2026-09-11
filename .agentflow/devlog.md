@@ -4,19 +4,19 @@ Project: solot
 
 Notebook: .agentflow/devlog.md — root.
 
-Current commit: initial AgentFlow workspace closeout on master.
+Current commit: specification decomposition closeout on master.
 
-Tests/scenarios: resume intake passed with valid schema v7 configuration.
+Tests/scenarios: specification completeness and AgentFlow terminal preflight.
 
 Configuration: ag.json — schema v7; validated for codex this round.
 
-Proven: AgentFlow and the local Git repository were initialized successfully.
+Proven: the complete owner specification was preserved and decomposed into five MVP work packages with acceptance criteria.
 
-Open: the owner plans to provide a large specification; its content has not arrived yet.
+Open: three product decisions remain: family bootstrap, content ownership rules, and Vite SPA versus Next.js.
 
-Next: collect specification batches until the owner writes 「規格結束」, then decompose them into traceable requirements.
+Next: receive the three product decisions, then prepare the implementation design and plan commit.
 
-Artifacts: none.
+Artifacts: A-003 structured specification in this notebook.
 
 Archived eras: none.
 
@@ -359,6 +359,8 @@ src/
 
 + 有點像論壇 發文 下面可以留言 手機端RWD
 
++ 規格結束
+
 ## [RUN-001] Event — 2026-09-11 23:55:36 +08:00 (during round A-003)
 
 - Route: direct intake.
@@ -369,3 +371,129 @@ src/
 
 - Captured the added product-shape constraint verbatim: forum-style posts with comments beneath each post and mobile responsive design.
 - Specification collection remains open pending 「規格結束」.
+
+## [RUN-003] Event — 2026-09-11 23:58:08 +08:00 (during round A-003)
+
+- The owner closed specification intake with 「規格結束」.
+- Route remains direct: decompose the captured specification into MVP work packages, acceptance criteria, security constraints, deferred scope, and explicit owner decisions.
+- Scope is documentation only; no application source or external service was changed.
+
+# ← Reply / A-003
+
+2026-09-11 23:58:08 +08:00 — GPT-5 Codex
+
+## [SUMMARY]
+
+- 規格已完整收錄並拆成 5 個 MVP 工作包。
+- 固定技術方向為 React 前端、Supabase Auth/PostgreSQL/Storage、Vercel 部署與手機端 RWD。
+- MVP 保留家庭群組隔離、論壇貼文留言、行程時間軸、共享相簿與個人資料。
+- emoji、提及、通知、拖曳、管理員治理與行程討論串連動延至 v2。
+- 開發前仍需確認 3 個會影響資料模型或流程的產品決策。
+
+## [FINAL REPORT]
+
+### 1. 產品目標與邊界
+
+建立私人家庭論壇。登入成員只能看到自己 family_id 的資料，可以發表主題並在下方留言，也能共同維護行程與相簿。介面需支援手機、平板與桌面；部署目標為 Vercel，帳號、資料與檔案由 Supabase 提供。
+
+MVP 不包含公開內容、搜尋引擎流量、地圖、即時通知、emoji、@提及及完整管理後台。
+
+### 2. 工作包 1 — 平台、帳號與家庭隔離
+
+範圍：React 專案、路由與共用版型、Supabase client、Vercel 環境變數、Email 密碼登入、登出、忘記密碼、邀請碼註冊、profile、family_id，以及所有資料表與 Storage 的 RLS。
+
+驗收條件：
+
+- 未登入者只能進入登入、註冊與密碼重設頁。
+- 無效邀請碼無法建立家庭成員 profile。
+- 登入後可以讀取與修改自己的暱稱、頭像。
+- 使用者無法讀寫其他家庭的資料或照片路徑。
+- Vercel Preview/Production 不暴露 Supabase service-role key；前端只使用公開 anon key。
+
+安全約束：邀請碼不能靠前端直接查 families 表驗證。建議用受控 RPC 或伺服器端流程完成邀請碼驗證及 profile 建立。Storage 路徑採 family_id/album_id/file 格式並建立對應政策。
+
+### 3. 工作包 2 — 論壇式討論串與留言
+
+範圍：首頁最新討論摘要、討論串列表、建立貼文、討論串詳情、貼文下方依時間排序的留言。MVP 先做文字，不做留言圖片。
+
+驗收條件：
+
+- 列表顯示標題、作者、建立時間、最後回覆時間與留言數。
+- 成員可以建立、查看及刪除自己的主題與留言。
+- 詳情頁清楚區分主文與下方留言。
+- 送出空白標題、主文或留言時顯示驗證錯誤。
+- 手機寬度下輸入框、操作按鈕與留言內容不產生水平捲動。
+
+資料模型修正建議：threads 目前只有 title，無法保存論壇主文。最小修正是在 threads 增加 content 欄位；posts 專門保存下方留言。
+
+### 4. 工作包 3 — 行程規劃
+
+範圍：行程列表、建立行程、依日期自動產生 Day 1 至 Day N 的檢視，以及時間軸項目的新增、編輯、刪除與上下移動。
+
+驗收條件：
+
+- 結束日期不得早於開始日期。
+- 日期區間正確對應 day_index，跨月也必須正確。
+- 項目時間可留空；標題必填；地點與備註選填。
+- 同一天的項目依 order_index 穩定排序。
+- 手機使用頂部 Day 切換；寬螢幕可使用側欄或頂部切換。
+
+MVP 不做拖曳、地圖或行程對應討論串。
+
+### 5. 工作包 4 — 共享相簿
+
+範圍：相簿列表、建立相簿、可選擇綁定行程、多張照片上傳、照片說明、上傳者資訊、網格與放大檢視。
+
+驗收條件：
+
+- 只能上傳允許的圖片格式及限制內檔案。
+- 資料庫只保存 storage_path，不保存 service-role key 或公開永久密鑰。
+- 相簿網格在手機上自動縮欄，圖片保持比例。
+- 放大檢視可關閉並支援觸控操作。
+- 刪除照片時同步處理資料庫記錄與 Storage 物件，並顯示失敗狀態。
+
+### 6. 工作包 5 — 儀表板、個人頁與完整 RWD
+
+範圍：首頁最新討論、近期行程摘要、全站導覽、個人設定、載入中、空資料、錯誤與確認對話框狀態。
+
+RWD 驗收基準：
+
+- 360px 起可完整使用，無非預期水平捲動。
+- 觸控目標、表單、對話框及導覽適合單手操作。
+- 手機使用精簡導覽；桌面顯示完整導覽。
+- 討論、時間軸與相簿不只縮小桌面版，而有對應的手機排列。
+
+### 7. 資料與 RLS 邊界
+
+主要表維持 families、profiles、threads、posts、itineraries、itinerary_items、albums、photos。建議 albums 增加 nullable itinerary_id；threads 增加 content；常用外鍵、family_id、created_at、thread_id、itinerary_id 與 album_id 建立索引。
+
+posts、itinerary_items、photos 沒有直接 family_id，RLS 必須透過父表驗證家庭歸屬；不可只保護父表而漏掉子表。所有新增與更新政策也要驗證父記錄屬於目前家庭。
+
+### 8. 交付順序
+
+1. 專案骨架、Supabase schema、RLS、Auth 與邀請碼。
+2. 論壇主文與文字留言。
+3. 行程與 Day 時間軸、上下排序。
+4. 相簿與 Storage 上傳。
+5. 儀表板、profile、全站 RWD 與錯誤狀態收尾。
+6. v2：留言圖片、拖曳、emoji、@提及、通知、置頂、管理員權限、行程討論串連動。
+
+## Questions (batched — each with a suggested default)
+
+- 新家庭及第一位成員要如何建立？
+- Suggested default: MVP 由你在 Supabase 後台預先建立 family 與邀請碼；公開自行建立家庭延後。
+- ans:
+
+- 成員可以刪除或編輯哪些論壇內容？
+- Suggested default: MVP 只能編輯、刪除自己的主題與留言；管理員刪除他人內容延至 v2。
+- ans:
+
+- React 專案要採純 SPA 還是 Next.js？
+- Suggested default: 私人登入站不依賴 SEO，採 Vite + React Router + TypeScript，部署到 Vercel，架構最小且符合現有路由規格。
+- ans:
+
+---
+
+# → Ask / A-004
+
++
