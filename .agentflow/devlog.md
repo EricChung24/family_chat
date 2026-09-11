@@ -4,19 +4,19 @@ Project: solot
 
 Notebook: .agentflow/devlog.md — root.
 
-Current commit: specification decomposition closeout on master.
+Current commit: feature-start decision closeout on master.
 
-Tests/scenarios: specification completeness and AgentFlow terminal preflight.
+Tests/scenarios: feature-trigger intake and AgentFlow terminal preflight.
 
 Configuration: ag.json — schema v7; validated for codex this round.
 
 Proven: the complete owner specification was preserved and decomposed into five MVP work packages with acceptance criteria.
 
-Open: three product decisions remain: family bootstrap, content ownership rules, and Vite SPA versus Next.js.
+Open: owner decision required for the family-forum feature stream; three product defaults remain reviewable at Design Go.
 
-Next: receive the three product decisions, then prepare the implementation design and plan commit.
+Next: on stream approval, open family-forum through the AgentFlow CLI and prepare the design and plan commit.
 
-Artifacts: A-003 structured specification in this notebook.
+Artifacts: A-003 structured specification in this notebook; no source artifacts yet.
 
 Archived eras: none.
 
@@ -495,5 +495,40 @@ posts、itinerary_items、photos 沒有直接 family_id，RLS 必須透過父表
 ---
 
 # → Ask / A-004
+
++ godev
+
+## [RUN-001] Event — 2026-09-11 23:59:54 +08:00 (during round A-004)
+
+- Detected a plain new-feature implementation request on the default branch.
+- Configuration resolves streams to ask, so feature work cannot start until the owner chooses whether to open an isolated stream.
+- Proposed carrying forward the three documented defaults for family bootstrap, content ownership, and Vite SPA; they remain reviewable before Design Go.
+- No source files were created or changed.
+
+# ← Reply / A-004
+
+2026-09-12 00:00:04 +08:00 — GPT-5 Codex
+
+## [SUMMARY]
+
+- 已收到開始開發指令。
+- 專案設定要求新功能先確認是否開啟獨立 stream。
+- 尚未建立或修改應用程式原始碼。
+
+## [FINAL REPORT]
+
+「godev」已辨識為家庭討論區的新功能開發啟動指令。現有 AgentFlow 設定為 streams: ask，因此必須先取得 stream 選擇，才能建立設計提交與程式碼。
+
+若開啟 stream，家庭討論區會在獨立分支與 worktree 開發，完成後再安全合併回 master。先前尚未回答的產品決策將暫採建議預設：Supabase 後台預建第一個家庭、成員只能修改自己的內容、Vite + React Router + TypeScript；這些仍會寫入設計供你在 Design Go 前審核。
+
+## Questions (batched — each with a suggested default)
+
+- 是否為「家庭討論區」開啟獨立功能 stream？
+- Suggested default: 是，使用 task key family-forum，避免完整功能開發直接堆在 master。
+- ans:
+
+---
+
+# → Ask / A-005
 
 +
