@@ -119,4 +119,7 @@ Route selected: direct. Owner requested no intermediate questions and completion
 
 # → Ask / A-003
 
-+
+怎麼都還沒開始開發 ?
+
+## [RUN-001] Event (during round A-003)
+Corrected scope after direct inspection of the root notebook: the family-forum stream has a complete authorized MVP specification. Consequential direct route selected. Created A-003-family-forum-mvp/design.md and canonical tracker.md covering React/Vite/TypeScript, Supabase schema and family-isolated RLS, discussions, itineraries, albums, profile, responsive design, testing, and Vercel delivery. Source work remains gated on the exact committed Design Go required by AgentFlow.
