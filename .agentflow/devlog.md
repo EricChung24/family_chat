@@ -4,19 +4,19 @@ Project: solot
 
 Notebook: .agentflow/devlog.md — root.
 
-Current commit: feature-start decision closeout on master.
+Current commit: GitHub publication closeout on master.
 
-Tests/scenarios: feature-trigger intake and AgentFlow terminal preflight.
+Tests/scenarios: GitHub authentication, repository creation, remote verification, and AgentFlow terminal preflight.
 
 Configuration: ag.json — schema v7; validated for codex this round.
 
-Proven: the complete owner specification was preserved and decomposed into five MVP work packages with acceptance criteria.
+Proven: public repository EricChung24/family_chat exists and is configured as origin.
 
-Open: owner decision required for the family-forum feature stream; three product defaults remain reviewable at Design Go.
+Open: application source is not implemented; owner decision is still required for the family-forum feature stream.
 
-Next: on stream approval, open family-forum through the AgentFlow CLI and prepare the design and plan commit.
+Next: commit and push this round, then await feature-stream approval.
 
-Artifacts: A-003 structured specification in this notebook; no source artifacts yet.
+Artifacts: A-003 structured specification; public GitHub repository https://github.com/EricChung24/family_chat.
 
 Archived eras: none.
 
@@ -530,5 +530,43 @@ posts、itinerary_items、photos 沒有直接 family_id，RLS 必須透過父表
 ---
 
 # → Ask / A-005
+
++ 幫我提交github 名稱為 family_chat
+
++ 我要公開
+
++ OK
+
+## [RUN-001] Event — 2026-09-12 00:08:53 +08:00 (during round A-005)
+
+- Route: direct external publication.
+- Installed GitHub CLI 2.100.0 after owner approval and authenticated as EricChung24 through GitHub device authorization.
+- Created public repository EricChung24/family_chat and configured it as origin.
+- Push remains pending until the current notebook round is closed and committed.
+
+# ← Reply / A-005
+
+2026-09-12 00:08:53 +08:00 — GPT-5 Codex
+
+## [SUMMARY]
+
+- 已建立公開 GitHub repository：EricChung24/family_chat。
+- GitHub CLI 已登入 EricChung24，origin 已設定。
+- 本輪記錄提交後會推送 master。
+- 目前 repository 只有 AgentFlow 規格與開發記錄，尚無家庭討論區應用程式碼。
+
+## [FINAL REPORT]
+
+建立公開 family_chat repository 的要求已成功完成。遠端網址為 https://github.com/EricChung24/family_chat，描述標示為 React、Supabase 與 Vercel 的 RWD 家庭討論區。
+
+GitHub CLI 2.100.0 已安裝並透過官方裝置流程完成授權。沒有將密碼、Supabase key 或 GitHub token 寫入 repository。應用程式尚未開始實作，因為上一輪的 family-forum stream 選擇仍未獲得明確回答；目前推送的是已提交的規格與 AgentFlow 記錄。
+
+## Questions (batched — each with a suggested default)
+
+- None.
+
+---
+
+# → Ask / A-006
 
 +
