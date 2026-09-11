@@ -357,8 +357,15 @@ src/
 
 + 我使用supabase + vercel
 
++ 有點像論壇 發文 下面可以留言 手機端RWD
+
 ## [RUN-001] Event — 2026-09-11 23:55:36 +08:00 (during round A-003)
 
 - Route: direct intake.
 - Captured specification batch 1 verbatim, including the added deployment constraint: Supabase + Vercel.
 - Collection remains open because the owner has not written 「規格結束」; no decomposition or implementation decision has been frozen.
+
+## [RUN-002] Event — 2026-09-11 23:57:19 +08:00 (during round A-003)
+
+- Captured the added product-shape constraint verbatim: forum-style posts with comments beneath each post and mobile responsive design.
+- Specification collection remains open pending 「規格結束」.
