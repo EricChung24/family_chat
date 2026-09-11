@@ -10,25 +10,25 @@
 
 - **Last update:** 2026-09-12 00:33:10 Asia/Taipei.
 
-- **Evidence commit:** uncommitted.
+- **Evidence commit:** 8c1bd73fb5907c244d06a1268d0f93ae62abd07e.
 
 ## Overall state
 
-- **State:** active.
+- **State:** complete.
 
-- **Reason:** Final cross-check and closeout remain.
+- **Reason:** All accepted tasks are complete with review, commit, push, and branch-equality evidence.
 
 - **Total:** 2.
 
-- **Completed:** 1.
+- **Completed:** 2.
 
-- **Remaining:** 1.
+- **Remaining:** 0.
 
 ## Accepted task checklist
 
 - [x] **T-1:** Obtain and independently accept a narrow external cross-check for activation-record commit `348a86b`; scope is only the A-001 notebook record and required review artifacts; proof requires a report with Outcome, Minimality, and Conformance all PASS plus a non-empty final Self-check. Source: A-001. Proof: cross-check-report.md.
 
-- [ ] **T-2:** Close A-001 in Traditional Chinese and leave a complete recoverable stream state; scope is the stream notebook, STATUS, tracker, required closeout records, commits, and remote push only; proof requires notebook preflight, clean Git status, and local/remote branch equality. Source: A-001.
+- [x] **T-2:** Close A-001 in Traditional Chinese and leave a complete recoverable stream state; scope is the stream notebook, STATUS, tracker, required closeout records, commits, and remote push only; proof requires notebook preflight, clean Git status, and local/remote branch equality. Source: A-001. Proof: 8c1bd73fb5907c244d06a1268d0f93ae62abd07e.
 
 ## Accepted scope changes
 
@@ -36,29 +36,29 @@
 
 ## Current recovery
 
-- **Current item:** T-2.
+- **Current item:** None.
 
-- **Last proven result:** Attempt 3 report passed Outcome, Minimality, and Conformance and ended with a non-empty Self-check; host gate PASS.
+- **Last proven result:** Closeout commit `8c1bd73fb5907c244d06a1268d0f93ae62abd07e` was pushed and exactly matched `origin/family-forum`.
 
 - **Active blocker or running process:** None.
 
-- **Next safe action:** Record the accepted review, close A-001, update STATUS, run preflight, commit, push, and prove branch equality.
+- **Next safe action:** None.
 
 - **Expected changed files:** .agentflow/features/family-forum/family-forum.devlog.md; .agentflow/features/family-forum/artifacts/A-001-godev/tracker.md; .agentflow/features/family-forum/artifacts/A-001-godev/cross-check-report.md.
 
 ## Completion proof
 
-- **All accepted tasks checked:** no.
+- **All accepted tasks checked:** yes.
 
 - **Blocking accepted decision:** none.
 
 - **Operation running:** no.
 
-- **Next action remaining:** T-2.
+- **Next action remaining:** None.
 
-- **Evidence status:** current.
+- **Evidence status:** complete.
 
-- **Judgment:** active.
+- **Judgment:** complete.
 
 ## Update meaning
 
