@@ -275,3 +275,6 @@ Fixed stale post-login UI state: auth success now immediately sets sessionEmail 
 
 ## [RUN-028] Event (during round A-005)
 Completed discussion persistence: opening a thread now loads its posts from Supabase, and replying inserts a post under the authenticated user before updating the visible list. No local comment seed remains. Build and tests pass; lint reports one non-blocking React set-state-in-effect advisory for the external-data synchronization effect.
+
+## [RUN-029] Event (during round A-005)
+Simplified the product to one shared family space as requested: removed family-name input and all join/invite semantics from signup, fixed the registered household to ????, and updated bootstrap_family to reuse the first existing family or create the single default family. Build, lint, and tests pass; the remaining lint output is one non-blocking React effect advisory.
