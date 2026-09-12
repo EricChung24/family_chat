@@ -1,6 +1,6 @@
 import type { Profile } from './types'
 
-export const isSupabaseConfigured = Boolean(import.meta.env.VITE_SUPABASE_URL && import.meta.env.VITE_SUPABASE_ANON_KEY)
+export const isSupabaseConfigured = Boolean(import.meta.env.VITE_SUPABASE_URL && import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY)
 
 export function getFamilyScope(profile: Profile | null) {
   if (!profile?.family_id) throw new Error('A family membership is required before loading shared content.')

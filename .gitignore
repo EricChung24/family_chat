@@ -6,6 +6,10 @@ dist/
 dist-ssr/
 *.log
 *.local
+.env
+.env.local
+.env.production
+.env.*.local
 .vscode/
 .idea/
 .DS_Store

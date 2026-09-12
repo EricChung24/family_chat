@@ -215,3 +215,6 @@ Owner resubmitted the local Supabase configuration. The credential-safe verifica
 
 ## [RUN-008] Event (during round A-005)
 Continued godev recovery: local workspace is clean and latest implementation records are pushed. A credential-safe DNS probe for the configured Supabase host failed in the restricted execution environment, so external connectivity cannot be used as acceptance evidence. No source changes were authorized by this probe; local build remains the trusted result and T-4/T-5/T-6 remain open.
+
+## [RUN-009] Event (during round A-005)
+Deployment hardening slice completed: confirmed React/Vite SPA, verified package build script (`tsc -b && vite build`), switched all client configuration references from VITE_SUPABASE_ANON_KEY to VITE_SUPABASE_PUBLISHABLE_KEY, normalized .env.example, explicitly ignored .env variants, and added DEPLOYMENT.md with Vercel settings and Supabase safety guidance. npm install, npm run build, npm run lint, npm test, and git diff --check all pass. No router is present, so no vercel.json rewrite is needed for current tab navigation.
