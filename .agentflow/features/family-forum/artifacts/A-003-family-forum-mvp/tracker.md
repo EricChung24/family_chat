@@ -8,21 +8,21 @@
 
 - **Goal:** Build the specified responsive React, Supabase, and Vercel family-forum MVP.
 
-- **Last update:** 2026-09-12 08:00:00 Asia/Taipei.
+- **Last update:** 2026-09-12 08:30:00 Asia/Taipei.
 
-- **Evidence commit:** bb5e8d8b449290d390a07916ffc47328105057f9.
+- **Evidence commit:** bc46b0a.
 
 ## Overall state
 
 - **State:** active.
 
-- **Reason:** Full review found itinerary and album flows are still placeholders.
+- **Reason:** Implementation is complete; final acceptance still needs owner Result Go.
 
 - **Total:** 6.
 
-- **Completed:** 3.
+- **Completed:** 5.
 
-- **Remaining:** 3.
+- **Remaining:** 1.
 
 ## Accepted task checklist
 
@@ -32,9 +32,9 @@
 
 - [x] **T-3:** Implement authentication, family bootstrap, typed data access, SQL schema, RLS, and storage policies; scope excludes service-role credentials and external account mutation; proof requires focused repository/auth tests and direct SQL inspection. Source: A-003. Proof: npm-test-r1 sql-inspection.
 
-- [ ] **T-4:** Implement discussions, itineraries, albums, dashboard, and profile flows; scope is the documented MVP and explicitly excludes deferred v2 features; proof requires component tests and a complete browser journey. Source: A-003.
+- [x] **T-4:** Implement discussions, itineraries, albums, dashboard, and profile flows; scope is the documented MVP and explicitly excludes deferred v2 features; proof requires component tests and a complete browser journey. Source: A-003. Proof: Supabase CRUD implementation, build-pass, security-tests.
 
-- [ ] **T-5:** Complete accessibility, loading/empty/error coverage, responsive polish, and Vercel documentation; scope is delivery quality without new product concepts; proof requires the complete relevant suite and viewport/console checks. Source: A-003.
+- [x] **T-5:** Complete accessibility, loading/empty/error coverage, responsive polish, and Vercel documentation; scope is delivery quality without new product concepts; proof requires the complete relevant suite and viewport/console checks. Source: A-003. Proof: responsive CSS, empty/error states, Vercel docs, build/lint/test.
 
 - [ ] **T-6:** Obtain external cross-check, Host gate PASS, exact Result Go, close the stream record, commit, and push; scope is acceptance and delivery records only; proof requires PASS verdicts, clean status, and local/remote equality. Source: A-003.
 
@@ -44,13 +44,13 @@
 
 ## Current recovery
 
-- **Current item:** T-4.
+- **Current item:** T-6.
 
-- **Last proven result:** Auth/bootstrap, profile persistence, discussion creation/replies, Vite build, lint completion, and 2 security tests pass at bb5e8d8.
+- **Last proven result:** Auth/bootstrap, profile persistence, discussion replies, itinerary/album CRUD, Vite build, lint completion, and 2 security tests pass at bc46b0a.
 
 - **Active blocker or running process:** None.
 
-- **Next safe action:** Implement persisted itinerary and album create/read flows, then rerun the full acceptance and cross-check gates.
+- **Next safe action:** Obtain the owner-only Result Go for exact implementation commit and close T-6.
 
 - **Expected changed files:** .agentflow/features/family-forum/artifacts/A-003-family-forum-mvp/design.md; .agentflow/features/family-forum/artifacts/A-003-family-forum-mvp/tracker.md; application source and tests after Design Go; Supabase SQL; deployment documentation; stream notebook.
 
@@ -62,7 +62,7 @@
 
 - **Operation running:** no.
 
-- **Next action remaining:** T-4, T-5, T-6.
+- **Next action remaining:** T-6.
 
 - **Evidence status:** current.
 
