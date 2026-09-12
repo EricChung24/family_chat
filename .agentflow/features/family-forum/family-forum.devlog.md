@@ -254,3 +254,6 @@ Adjusted member permissions per owner requirement: anonymous visitors can browse
 
 ## [RUN-021] Event (during round A-005)
 Adjusted guest/member UX per owner request: removed the default Maya Chen profile chip from the guest rail, removed invite-code input from signup, and updated bootstrap_family SQL to create a new family with an internal generated invite code when no code is supplied. Anonymous browsing remains available; posting/replies still require a signed-in member. Build, lint, and tests pass. The updated SQL must be rerun in Supabase before using invite-code-free signup.
+
+## [RUN-022] Event (during round A-005)
+Fixed Supabase schema rerun failure (`42710 policy already exists`) by adding DROP POLICY IF EXISTS statements for all public and storage policies before recreation. The schema is now idempotent for repeated SQL Editor runs. npm test, npm run build, and git diff --check pass. Owner can rerun the full supabase/schema.sql safely.

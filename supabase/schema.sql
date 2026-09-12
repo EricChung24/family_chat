@@ -49,6 +49,19 @@ alter table public.itinerary_items enable row level security;
 alter table public.albums enable row level security;
 alter table public.photos enable row level security;
 
+drop policy if exists "members read their family" on public.families;
+drop policy if exists "members read family profiles" on public.profiles;
+drop policy if exists "members manage own profile" on public.profiles;
+drop policy if exists "members manage family threads" on public.threads;
+drop policy if exists "members manage family posts" on public.posts;
+drop policy if exists "members manage family itineraries" on public.itineraries;
+drop policy if exists "members manage itinerary items" on public.itinerary_items;
+drop policy if exists "members manage family albums" on public.albums;
+drop policy if exists "members manage album photos" on public.photos;
+drop policy if exists "family members read photos" on storage.objects;
+drop policy if exists "family members upload photos" on storage.objects;
+drop policy if exists "family members delete own photos" on storage.objects;
+
 create policy "members read their family" on public.families for select to authenticated using (id = public.my_family_id());
 create policy "members read family profiles" on public.profiles for select to authenticated using (family_id = public.my_family_id());
 create policy "members manage own profile" on public.profiles for update to authenticated using (id = auth.uid()) with check (id = auth.uid() and family_id = public.my_family_id());
