@@ -8,7 +8,7 @@
 
 - **Goal:** Build the specified responsive React, Supabase, and Vercel family-forum MVP.
 
-- **Last update:** 2026-09-12 01:05:00 Asia/Taipei.
+- **Last update:** 2026-09-12 01:12:00 Asia/Taipei.
 
 - **Evidence commit:** c57bc37630bd3b39f5cb2c22c644d4c6422627d0.
 
@@ -20,9 +20,9 @@
 
 - **Total:** 6.
 
-- **Completed:** 2.
+- **Completed:** 3.
 
-- **Remaining:** 4.
+- **Remaining:** 3.
 
 ## Accepted task checklist
 
@@ -30,7 +30,7 @@
 
 - [x] **T-2:** Scaffold the Vite React TypeScript application and design system; scope is tooling, app shell, responsive navigation, tokens, and shared states; proof requires typecheck, lint, tests, and responsive render evidence. Source: A-003. Proof: build-pass lint-pass dev-journey.
 
-- [ ] **T-3:** Implement authentication, family bootstrap, typed data access, SQL schema, RLS, and storage policies; scope excludes service-role credentials and external account mutation; proof requires focused repository/auth tests and direct SQL inspection. Source: A-003.
+- [x] **T-3:** Implement authentication, family bootstrap, typed data access, SQL schema, RLS, and storage policies; scope excludes service-role credentials and external account mutation; proof requires focused repository/auth tests and direct SQL inspection. Source: A-003. Proof: npm-test-r1 sql-inspection.
 
 - [ ] **T-4:** Implement discussions, itineraries, albums, dashboard, and profile flows; scope is the documented MVP and explicitly excludes deferred v2 features; proof requires component tests and a complete browser journey. Source: A-003.
 
@@ -44,13 +44,13 @@
 
 ## Current recovery
 
-- **Current item:** T-3.
+- **Current item:** T-4.
 
-- **Last proven result:** T-2 scaffold/app shell and the initial Supabase security boundary compile successfully; `npm run build` and `npm run lint` pass, and Vite dev server returned HTTP 200.
+- **Last proven result:** T-3 SQL/RLS/storage boundary and typed Supabase client pass focused tests; `npm test` has 2 passing tests and direct SQL inspection is complete.
 
 - **Active blocker or running process:** None.
 
-- **Next safe action:** Review the c57bc37 source boundary, add focused tests for preview/family scope, then complete T-3/T-4.
+- **Next safe action:** Expand discussion, itinerary, album, and profile interactions into persisted repository flows, then run the complete browser journey.
 
 - **Expected changed files:** .agentflow/features/family-forum/artifacts/A-003-family-forum-mvp/design.md; .agentflow/features/family-forum/artifacts/A-003-family-forum-mvp/tracker.md; application source and tests after Design Go; Supabase SQL; deployment documentation; stream notebook.
 
