@@ -221,3 +221,6 @@ Deployment hardening slice completed: confirmed React/Vite SPA, verified package
 
 ## [RUN-010] Event (during round A-005)
 Aligned the Supabase client variable name with the requested createClient pattern (`supabaseKey`) while retaining VITE_SUPABASE_PUBLISHABLE_KEY. Build, lint, and security tests remain green; implementation commit 25fdbf6 is pushed.
+
+## [RUN-011] Event (during round A-005)
+Investigated Vercel `vite: command not found`: package.json already includes vite ^8.3.0 and @vitejs/plugin-react in devDependencies, and package-lock contains both. Updated only build scripts so Vercel uses the requested `npm run build` wrapper (`vite build`), added a separate `typecheck` script, and left UI/features untouched. npm install, npm run build, npm run typecheck, npm run lint, npm test, and git diff --check all pass. No lockfile dependency changes were needed.
