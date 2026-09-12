@@ -206,3 +206,6 @@ T-3 security boundary and focused tests are now recorded after the earlier RUN n
 
 ## [RUN-005] Event (during round A-005)
 Discussion detail and local comment flow are implemented and committed at c0fee3c2ac2ad103a85275727f2c6ccb0864093d. The complete relevant suite passes: npm test 2/2, npm run build, and npm run lint. T-4 remains active because persistence, auth UI, and full browser journey are still open; no Supabase credentials were logged or required for preview mode.
+
+## [RUN-006] Event (during round A-005)
+Owner supplied local Supabase configuration without requesting credential logging. Coordinator verified both environment variables are present and `.env.local` is Git-ignored; a credential-free output check against the configured REST endpoint returned HTTP 401, so the endpoint is reachable but the key/project pairing is not accepted by the API yet. No credential value was emitted or recorded. Preview mode remains safe; T-4/T-5/T-6 remain open.
