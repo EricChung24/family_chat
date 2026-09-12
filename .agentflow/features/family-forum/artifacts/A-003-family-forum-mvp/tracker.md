@@ -8,9 +8,9 @@
 
 - **Goal:** Build the specified responsive React, Supabase, and Vercel family-forum MVP.
 
-- **Last update:** 2026-09-12 00:41:00 Asia/Taipei.
+- **Last update:** 2026-09-12 00:58:00 Asia/Taipei.
 
-- **Evidence commit:** uncommitted.
+- **Evidence commit:** fc63fc46df85875a47f02db9f90129bb829aea62.
 
 ## Overall state
 
@@ -20,15 +20,15 @@
 
 - **Total:** 6.
 
-- **Completed:** 0.
+- **Completed:** 2.
 
-- **Remaining:** 6.
+- **Remaining:** 4.
 
 ## Accepted task checklist
 
-- [ ] **T-1:** Freeze the smallest complete MVP design from the root specification; scope is design, security contract, normal journey, and acceptance only; proof requires a committed `design.md` and exact Design Go. Source: A-003.
+- [x] **T-1:** Freeze the smallest complete MVP design from the root specification; scope is design, security contract, normal journey, and acceptance only; proof requires a committed `design.md` and exact Design Go. Source: A-003. Proof: fc63fc46df85875a47f02db9f90129bb829aea62.
 
-- [ ] **T-2:** Scaffold the Vite React TypeScript application and design system; scope is tooling, app shell, responsive navigation, tokens, and shared states; proof requires typecheck, lint, tests, and responsive render evidence. Source: A-003.
+- [x] **T-2:** Scaffold the Vite React TypeScript application and design system; scope is tooling, app shell, responsive navigation, tokens, and shared states; proof requires typecheck, lint, tests, and responsive render evidence. Source: A-003. Proof: build-pass lint-pass dev-journey.
 
 - [ ] **T-3:** Implement authentication, family bootstrap, typed data access, SQL schema, RLS, and storage policies; scope excludes service-role credentials and external account mutation; proof requires focused repository/auth tests and direct SQL inspection. Source: A-003.
 
@@ -44,13 +44,13 @@
 
 ## Current recovery
 
-- **Current item:** T-1.
+- **Current item:** T-3.
 
-- **Last proven result:** The root notebook contains the complete family-forum MVP specification and authorizes this `family-forum` stream.
+- **Last proven result:** T-2 scaffold and app shell compile successfully; `npm run build` and `npm run lint` pass, and Vite dev server returned HTTP 200.
 
-- **Active blocker or running process:** Source work is gated on a committed design and exact Design Go.
+- **Active blocker or running process:** None.
 
-- **Next safe action:** Validate and commit this tracker and design, then record the exact Design Go requirement.
+- **Next safe action:** Add typed preview data boundaries and Supabase schema/RLS artifacts for T-3.
 
 - **Expected changed files:** .agentflow/features/family-forum/artifacts/A-003-family-forum-mvp/design.md; .agentflow/features/family-forum/artifacts/A-003-family-forum-mvp/tracker.md; application source and tests after Design Go; Supabase SQL; deployment documentation; stream notebook.
 
@@ -58,7 +58,7 @@
 
 - **All accepted tasks checked:** no.
 
-- **Blocking accepted decision:** exact Design Go for the plan commit.
+- **Blocking accepted decision:** none.
 
 - **Operation running:** no.
 

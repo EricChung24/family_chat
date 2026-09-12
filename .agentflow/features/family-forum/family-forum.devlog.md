@@ -190,4 +190,10 @@ Route selected: direct continuation. The owner repeated `godev` twice; the froze
 
 # → Ask / A-005
 
-+
+Design Go: fc63fc46df85875a47f02db9f90129bb829aea62
+
+## [RUN-001] Event (during round A-005)
+Owner supplied exact Design Go for fc63fc46df85875a47f02db9f90129bb829aea62. Started implementation under the frozen MVP design. T-2 is complete: Vite dev server served HTTP 200, npm run build passed TypeScript/Vite compilation, npm run lint passed, and the responsive UI shell plus core interactive views are implemented.
+
+## [RUN-002] Event (during round A-005)
+T-2 implementation slice complete: Vite/React/TypeScript app shell, responsive desktop rail and mobile navigation, dashboard, discussions composer, trips, albums, profile, modal/toast states, design tokens, typed domain models, Supabase client boundary, environment template, and schema/RLS/storage SQL are present. `npm run build` and `npm run lint` pass; Vite dev journey returned HTTP 200. T-3 data/security artifacts are staged for focused verification.

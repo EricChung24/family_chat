@@ -1,3 +1,11 @@
 .claude/
 .codex/
 .worktrees/
+node_modules/
+dist/
+dist-ssr/
+*.log
+*.local
+.vscode/
+.idea/
+.DS_Store
