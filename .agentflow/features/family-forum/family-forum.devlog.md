@@ -245,3 +245,6 @@ Implemented the minimum real member flow after confirming SQL was already applie
 
 ## [RUN-018] Event (during round A-005)
 Applied a dark visual theme without changing functionality: deep ink-green surfaces, warm off-white text, mint-green actions, clay-orange accents, darker cards/modals/inputs, and mobile navigation contrast. Build, lint, and security tests pass.
+
+## [RUN-019] Event (during round A-005)
+Confirmed why Supabase appears disconnected: browser client is intentionally null unless VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY are injected at build time; local .env.local currently exposes only non-VITE variable names, which Vite does not publish. The frontend currently calls Supabase only for auth session, signup/login/bootstrap, logout, and profile update; discussion, itinerary, album, and dashboard content remain local preview seed data. SQL/RLS can be installed while the app still appears disconnected until Vercel variables are configured and redeployed.
