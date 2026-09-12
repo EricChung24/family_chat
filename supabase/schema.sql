@@ -27,7 +27,7 @@ begin
   if auth.uid() is null or length(trim(p_display_name)) < 1 then raise exception 'A signed-in user and display name are required'; end if;
   select * into target_family from public.families order by created_at limit 1;
   if target_family.id is null then
-    insert into public.families (name, invite_code) values ('吾黨所鍾', encode(gen_random_bytes(6), 'hex')) returning * into target_family;
+    insert into public.families (name, invite_code) values ('吾黨所鍾', substr(md5(gen_random_uuid()::text), 1, 12)) returning * into target_family;
   end if;
   insert into public.profiles (id, family_id, display_name, role) values (auth.uid(), target_family.id, trim(p_display_name), 'member')
     on conflict (id) do update set display_name = excluded.display_name
