@@ -260,3 +260,6 @@ Fixed Supabase schema rerun failure (`42710 policy already exists`) by adding DR
 
 ## [RUN-023] Event (during round A-005)
 Removed all preview seed content and renamed the brand to ????. Guest home/discussions/trips/albums/profile now show empty states instead of fabricated family data; posting is blocked unless Supabase is configured and a member session exists. Signup no longer displays an invite-code field, and the database bootstrap generates an internal code when omitted. Build, lint, and tests pass.
+
+## [RUN-024] Event (during round A-005)
+Connected the discussions view to Supabase data: authenticated sessions now load `threads` with nested `posts`, and member composer inserts a thread plus its first post then refreshes the list. Removed the previous no-op writing behavior. Anonymous users still browse empty/live data but cannot create records. Build, lint, and tests pass.
