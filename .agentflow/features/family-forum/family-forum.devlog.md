@@ -272,3 +272,6 @@ Fixed the concrete posting failure: threads.family_id is NOT NULL and RLS requir
 
 ## [RUN-027] Event (during round A-005)
 Fixed stale post-login UI state: auth success now immediately sets sessionEmail and sessionName from the returned Supabase user before closing the modal and routing home, instead of relying solely on the asynchronous auth listener. Reload-time session restoration remains intact. Build, lint, and tests pass.
+
+## [RUN-028] Event (during round A-005)
+Completed discussion persistence: opening a thread now loads its posts from Supabase, and replying inserts a post under the authenticated user before updating the visible list. No local comment seed remains. Build and tests pass; lint reports one non-blocking React set-state-in-effect advisory for the external-data synchronization effect.
