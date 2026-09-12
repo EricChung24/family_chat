@@ -266,3 +266,6 @@ Connected the discussions view to Supabase data: authenticated sessions now load
 
 ## [RUN-025] Event (during round A-005)
 Personalized authenticated home experience: on session load, the app reads the member display_name from profiles (falling back to auth metadata), and the home hero greets the member by name. Existing build, lint, and security tests pass; master includes the change.
+
+## [RUN-026] Event (during round A-005)
+Fixed the concrete posting failure: threads.family_id is NOT NULL and RLS requires it to match the member scope, but the client inserted only title/created_by. The composer now reads the signed-in user's profiles.family_id, inserts it explicitly, then creates the first post and refreshes data; missing membership reports a clear error. Build, lint, and tests pass.
