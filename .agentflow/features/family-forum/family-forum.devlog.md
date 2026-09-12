@@ -212,3 +212,6 @@ Owner supplied local Supabase configuration without requesting credential loggin
 
 ## [RUN-007] Event (during round A-005)
 Owner resubmitted the local Supabase configuration. The credential-safe verification reran without exposing values: the REST probe was unreachable during this attempt, while npm run build passed. This is an external/network availability result, not evidence of credential validity; preview mode and local build remain healthy.
+
+## [RUN-008] Event (during round A-005)
+Continued godev recovery: local workspace is clean and latest implementation records are pushed. A credential-safe DNS probe for the configured Supabase host failed in the restricted execution environment, so external connectivity cannot be used as acceptance evidence. No source changes were authorized by this probe; local build remains the trusted result and T-4/T-5/T-6 remain open.
