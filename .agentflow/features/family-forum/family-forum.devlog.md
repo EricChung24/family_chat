@@ -242,3 +242,6 @@ Diagnosed member-system complaint: Supabase schema contains auth-linked profiles
 
 ## [RUN-017] Event (during round A-005)
 Implemented the minimum real member flow after confirming SQL was already applied: Supabase auth session listener, email/password login and signup, family bootstrap RPC on signup, logout, and profile display-name update through the profiles table. Preview mode remains available when VITE credentials are absent. Added auth input styling. npm run build, npm run lint, and npm test pass.
+
+## [RUN-018] Event (during round A-005)
+Applied a dark visual theme without changing functionality: deep ink-green surfaces, warm off-white text, mint-green actions, clay-orange accents, darker cards/modals/inputs, and mobile navigation contrast. Build, lint, and security tests pass.
