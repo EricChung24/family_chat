@@ -218,3 +218,6 @@ Continued godev recovery: local workspace is clean and latest implementation rec
 
 ## [RUN-009] Event (during round A-005)
 Deployment hardening slice completed: confirmed React/Vite SPA, verified package build script (`tsc -b && vite build`), switched all client configuration references from VITE_SUPABASE_ANON_KEY to VITE_SUPABASE_PUBLISHABLE_KEY, normalized .env.example, explicitly ignored .env variants, and added DEPLOYMENT.md with Vercel settings and Supabase safety guidance. npm install, npm run build, npm run lint, npm test, and git diff --check all pass. No router is present, so no vercel.json rewrite is needed for current tab navigation.
+
+## [RUN-010] Event (during round A-005)
+Aligned the Supabase client variable name with the requested createClient pattern (`supabaseKey`) while retaining VITE_SUPABASE_PUBLISHABLE_KEY. Build, lint, and security tests remain green; implementation commit 25fdbf6 is pushed.
