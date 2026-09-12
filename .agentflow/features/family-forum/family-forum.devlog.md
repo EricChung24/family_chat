@@ -200,3 +200,6 @@ T-2 implementation slice complete: Vite/React/TypeScript app shell, responsive d
 
 ## [RUN-003] Event (during round A-005)
 Full external cross-check for c57bc37630bd3b39f5cb2c22c644d4c6422627d0 returned Verdict PASS, Outcome PASS, Minimality PASS, and Conformance PASS. Reviewer reran build/lint and inspected Supabase RLS/storage boundaries; Host gate: PASS. Report: .agentflow/features/family-forum/artifacts/A-003-family-forum-mvp/cross-check-report.md.
+
+## [RUN-004] Event (during round A-005)
+T-3 security boundary and focused tests are now recorded after the earlier RUN number correction. `npm test` passes 2/2, `npm run build` passes, and `npm run lint` passes. T-4 remains active for full persisted feature flows.
