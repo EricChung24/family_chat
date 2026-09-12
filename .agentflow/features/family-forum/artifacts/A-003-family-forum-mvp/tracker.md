@@ -8,9 +8,9 @@
 
 - **Goal:** Build the specified responsive React, Supabase, and Vercel family-forum MVP.
 
-- **Last update:** 2026-09-12 01:12:00 Asia/Taipei.
+- **Last update:** 2026-09-12 01:28:00 Asia/Taipei.
 
-- **Evidence commit:** c57bc37630bd3b39f5cb2c22c644d4c6422627d0.
+- **Evidence commit:** c0fee3c2ac2ad103a85275727f2c6ccb0864093d.
 
 ## Overall state
 
@@ -46,11 +46,11 @@
 
 - **Current item:** T-4.
 
-- **Last proven result:** T-3 SQL/RLS/storage boundary and typed Supabase client pass focused tests; `npm test` has 2 passing tests and direct SQL inspection is complete.
+- **Last proven result:** T-3 SQL/RLS/storage boundary and typed Supabase client pass focused tests; `npm test` has 2 passing tests and T-4 discussion detail/comment interaction is committed at c0fee3c2ac2ad103a85275727f2c6ccb0864093d.
 
 - **Active blocker or running process:** None.
 
-- **Next safe action:** Expand discussion, itinerary, album, and profile interactions into persisted repository flows, then run the complete browser journey.
+- **Next safe action:** Add persisted repository reads/writes and auth/bootstrap UI, then run the complete browser journey.
 
 - **Expected changed files:** .agentflow/features/family-forum/artifacts/A-003-family-forum-mvp/design.md; .agentflow/features/family-forum/artifacts/A-003-family-forum-mvp/tracker.md; application source and tests after Design Go; Supabase SQL; deployment documentation; stream notebook.
 

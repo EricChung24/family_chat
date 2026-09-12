@@ -203,3 +203,6 @@ Full external cross-check for c57bc37630bd3b39f5cb2c22c644d4c6422627d0 returned 
 
 ## [RUN-004] Event (during round A-005)
 T-3 security boundary and focused tests are now recorded after the earlier RUN number correction. `npm test` passes 2/2, `npm run build` passes, and `npm run lint` passes. T-4 remains active for full persisted feature flows.
+
+## [RUN-005] Event (during round A-005)
+Discussion detail and local comment flow are implemented and committed at c0fee3c2ac2ad103a85275727f2c6ccb0864093d. The complete relevant suite passes: npm test 2/2, npm run build, and npm run lint. T-4 remains active because persistence, auth UI, and full browser journey are still open; no Supabase credentials were logged or required for preview mode.
