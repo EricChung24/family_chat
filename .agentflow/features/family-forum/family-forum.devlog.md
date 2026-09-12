@@ -284,3 +284,6 @@ Removed the last implicit join-family failure for existing accounts: login now c
 
 ## [RUN-031] Event (during round A-005)
 Improved basic member discoverability: guest users now have a visible `?????` button in the top bar; authenticated users see their display name there and can open the logout panel directly. The existing session listener, logout action, and left-rail member chip remain. Build, lint, and tests pass.
+
+## [RUN-032] Event (during round A-005)
+Selected the all-in full AgentFlow pipeline. Completed profile synchronization cleanup so the real authenticated display name is loaded, edited, and persisted without fabricated profile values; corrected deployment documentation to remove stale branch guidance. `npm run build`, `npm run lint`, and `npm test` pass; lint retains only two non-blocking React effect advisories.
