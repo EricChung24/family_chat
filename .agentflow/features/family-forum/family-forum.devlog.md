@@ -224,3 +224,6 @@ Aligned the Supabase client variable name with the requested createClient patter
 
 ## [RUN-011] Event (during round A-005)
 Investigated Vercel `vite: command not found`: package.json already includes vite ^8.3.0 and @vitejs/plugin-react in devDependencies, and package-lock contains both. Updated only build scripts so Vercel uses the requested `npm run build` wrapper (`vite build`), added a separate `typecheck` script, and left UI/features untouched. npm install, npm run build, npm run typecheck, npm run lint, npm test, and git diff --check all pass. No lockfile dependency changes were needed.
+
+## [RUN-012] Event (during round A-005)
+Diagnosed Vercel ENOENT: the repository root contains package.json, so `/vercel/path0/package.json` indicates an incorrect Vercel repository/branch/Root Directory setting rather than a missing dependency. Added root vercel.json pinning `npm install`, `npm run build`, and `dist`; expanded DEPLOYMENT.md with the root-directory diagnosis. JSON validation, npm run build, and git diff --check pass. UI and feature code unchanged.
