@@ -251,3 +251,6 @@ Confirmed why Supabase appears disconnected: browser client is intentionally nul
 
 ## [RUN-020] Event (during round A-005)
 Adjusted member permissions per owner requirement: anonymous visitors can browse, while composer and replies require an authenticated session when Supabase is configured. Added login prompt gating, disabled anonymous comment input, and preserved preview-mode behavior without Supabase. Supabase Auth must have email confirmation disabled in Dashboard for immediate post-signup access. Build, lint, and tests pass.
+
+## [RUN-021] Event (during round A-005)
+Adjusted guest/member UX per owner request: removed the default Maya Chen profile chip from the guest rail, removed invite-code input from signup, and updated bootstrap_family SQL to create a new family with an internal generated invite code when no code is supplied. Anonymous browsing remains available; posting/replies still require a signed-in member. Build, lint, and tests pass. The updated SQL must be rerun in Supabase before using invite-code-free signup.
