@@ -248,3 +248,6 @@ Applied a dark visual theme without changing functionality: deep ink-green surfa
 
 ## [RUN-019] Event (during round A-005)
 Confirmed why Supabase appears disconnected: browser client is intentionally null unless VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY are injected at build time; local .env.local currently exposes only non-VITE variable names, which Vite does not publish. The frontend currently calls Supabase only for auth session, signup/login/bootstrap, logout, and profile update; discussion, itinerary, album, and dashboard content remain local preview seed data. SQL/RLS can be installed while the app still appears disconnected until Vercel variables are configured and redeployed.
+
+## [RUN-020] Event (during round A-005)
+Adjusted member permissions per owner requirement: anonymous visitors can browse, while composer and replies require an authenticated session when Supabase is configured. Added login prompt gating, disabled anonymous comment input, and preserved preview-mode behavior without Supabase. Supabase Auth must have email confirmation disabled in Dashboard for immediate post-signup access. Build, lint, and tests pass.
