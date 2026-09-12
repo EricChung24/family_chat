@@ -8,9 +8,9 @@
 
 - **Goal:** Build the specified responsive React, Supabase, and Vercel family-forum MVP.
 
-- **Last update:** 2026-09-12 00:58:00 Asia/Taipei.
+- **Last update:** 2026-09-12 01:05:00 Asia/Taipei.
 
-- **Evidence commit:** fc63fc46df85875a47f02db9f90129bb829aea62.
+- **Evidence commit:** c57bc37630bd3b39f5cb2c22c644d4c6422627d0.
 
 ## Overall state
 
@@ -46,11 +46,11 @@
 
 - **Current item:** T-3.
 
-- **Last proven result:** T-2 scaffold and app shell compile successfully; `npm run build` and `npm run lint` pass, and Vite dev server returned HTTP 200.
+- **Last proven result:** T-2 scaffold/app shell and the initial Supabase security boundary compile successfully; `npm run build` and `npm run lint` pass, and Vite dev server returned HTTP 200.
 
 - **Active blocker or running process:** None.
 
-- **Next safe action:** Add typed preview data boundaries and Supabase schema/RLS artifacts for T-3.
+- **Next safe action:** Review the c57bc37 source boundary, add focused tests for preview/family scope, then complete T-3/T-4.
 
 - **Expected changed files:** .agentflow/features/family-forum/artifacts/A-003-family-forum-mvp/design.md; .agentflow/features/family-forum/artifacts/A-003-family-forum-mvp/tracker.md; application source and tests after Design Go; Supabase SQL; deployment documentation; stream notebook.
 
