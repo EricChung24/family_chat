@@ -263,3 +263,6 @@ Removed all preview seed content and renamed the brand to ????. Guest home/discu
 
 ## [RUN-024] Event (during round A-005)
 Connected the discussions view to Supabase data: authenticated sessions now load `threads` with nested `posts`, and member composer inserts a thread plus its first post then refreshes the list. Removed the previous no-op writing behavior. Anonymous users still browse empty/live data but cannot create records. Build, lint, and tests pass.
+
+## [RUN-025] Event (during round A-005)
+Personalized authenticated home experience: on session load, the app reads the member display_name from profiles (falling back to auth metadata), and the home hero greets the member by name. Existing build, lint, and security tests pass; master includes the change.
