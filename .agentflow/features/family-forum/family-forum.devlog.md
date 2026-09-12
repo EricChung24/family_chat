@@ -269,3 +269,6 @@ Personalized authenticated home experience: on session load, the app reads the m
 
 ## [RUN-026] Event (during round A-005)
 Fixed the concrete posting failure: threads.family_id is NOT NULL and RLS requires it to match the member scope, but the client inserted only title/created_by. The composer now reads the signed-in user's profiles.family_id, inserts it explicitly, then creates the first post and refreshes data; missing membership reports a clear error. Build, lint, and tests pass.
+
+## [RUN-027] Event (during round A-005)
+Fixed stale post-login UI state: auth success now immediately sets sessionEmail and sessionName from the returned Supabase user before closing the modal and routing home, instead of relying solely on the asynchronous auth listener. Reload-time session restoration remains intact. Build, lint, and tests pass.
