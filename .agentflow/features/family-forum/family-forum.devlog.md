@@ -281,3 +281,6 @@ Simplified the product to one shared family space as requested: removed family-n
 
 ## [RUN-030] Event (during round A-005)
 Removed the last implicit join-family failure for existing accounts: login now calls the singleton bootstrap RPC too, which upserts the user's profile into ????; posting only reports a sync retry if membership data is genuinely unavailable. Signup/login no longer ask users to create or join a family. Build, lint, and tests pass.
+
+## [RUN-031] Event (during round A-005)
+Improved basic member discoverability: guest users now have a visible `?????` button in the top bar; authenticated users see their display name there and can open the logout panel directly. The existing session listener, logout action, and left-rail member chip remain. Build, lint, and tests pass.
