@@ -19,7 +19,8 @@ create or replace function public.my_family_id() returns uuid language sql stabl
 revoke all on function public.my_family_id() from public;
 grant execute on function public.my_family_id() to authenticated;
 
-create or replace function public.bootstrap_family(p_name text, p_invite_code text, p_display_name text)
+drop function if exists public.bootstrap_family(text, text, text);
+create or replace function public.bootstrap_family(p_display_name text)
 returns public.profiles language plpgsql security definer set search_path = public as $$
 declare target_family public.families;
 declare created_profile public.profiles;
@@ -35,8 +36,8 @@ begin
   return created_profile;
 end;
 $$;
-revoke all on function public.bootstrap_family(text, text, text) from public;
-grant execute on function public.bootstrap_family(text, text, text) to authenticated;
+revoke all on function public.bootstrap_family(text) from public;
+grant execute on function public.bootstrap_family(text) to authenticated;
 
 alter table public.families enable row level security;
 alter table public.profiles enable row level security;
