@@ -5,13 +5,17 @@ import { supabase } from './lib/supabaseClient'
 import { isSupabaseConfigured } from './lib/supabase'
 
 type Tab = 'home' | 'discussions' | 'trips' | 'albums' | 'profile'
-type Thread = { title: string; body: string; author: string; time: string; replies: number; tone: string; pinned?: boolean }
+type Thread = { id?: string; title: string; body: string; author: string; time: string; replies: number; tone: string; pinned?: boolean }
 
 const initialThreads: Thread[] = []
 
+function setThreadsFromDatabase(rows: Array<{ id: string; title: string; created_at: string; pinned: boolean; posts?: Array<{ content: string }> }>) {
+  return rows.map((row, index) => ({ id: row.id, title: row.title, body: row.posts?.[0]?.content ?? '尚無內容', author: '家庭成員', time: index === 0 ? '最新' : '較早', replies: row.posts?.length ?? 0, tone: index % 2 ? 'forest' : 'coral', pinned: row.pinned }))
+}
+
 function App() {
   const [tab, setTab] = useState<Tab>('home')
-  const [threads] = useState<Thread[]>(initialThreads)
+  const [threads, setThreads] = useState<Thread[]>(initialThreads)
   const [draft, setDraft] = useState('')
   const [compose, setCompose] = useState(false)
   const [toast, setToast] = useState('')
@@ -26,12 +30,13 @@ function App() {
   const [sessionEmail, setSessionEmail] = useState<string | null>(null)
   const [sessionName, setSessionName] = useState('')
   useEffect(() => { if (!supabase) return; supabase.auth.getSession().then(({ data }) => { const current = data.session?.user; setSessionEmail(current?.email ?? null); setSessionName(String(current?.user_metadata?.display_name ?? current?.email?.split('@')[0] ?? '')) }); const { data } = supabase.auth.onAuthStateChange((_event, current) => { setSessionEmail(current?.email ?? null); setSessionName(String(current?.user_metadata?.display_name ?? current?.email?.split('@')[0] ?? '')) }); return () => data.subscription.unsubscribe() }, [])
+  useEffect(() => { if (!supabase || !sessionEmail) return; supabase.from('threads').select('id,title,created_at,pinned,posts(content,created_at)').order('created_at', { ascending: false }).then(({ data, error }) => { if (error || !data) return; setThreads(setThreadsFromDatabase(data as Array<{ id: string; title: string; created_at: string; pinned: boolean; posts?: Array<{ content: string }> }>)) }) }, [sessionEmail])
   const notify = (message: string) => { setToast(message); window.setTimeout(() => setToast(''), 2400) }
   const submitAuth = async () => { if (!supabase || !email.trim() || !password) return; setAuthBusy(true); const result = authMode === 'login' ? await supabase.auth.signInWithPassword({ email: email.trim(), password }) : await supabase.auth.signUp({ email: email.trim(), password, options: { data: { display_name: displayName.trim() } } }); if (result.error) notify(result.error.message); else if (authMode === 'signup' && result.data.user && displayName.trim() && familyName.trim()) { const bootstrap = await supabase.rpc('bootstrap_family', { p_name: familyName.trim(), p_invite_code: '', p_display_name: displayName.trim() }); if (bootstrap.error) notify(bootstrap.error.message); else notify('註冊成功，家庭空間已建立') } else notify(authMode === 'login' ? '登入成功' : '註冊成功'); setAuthBusy(false); if (!result.error) { setSessionName(displayName.trim() || email.trim().split('@')[0]); setAuthOpen(false); setCompose(false); setProfilePanel(false); setTab('home') } }
   const signOut = async () => { if (supabase) await supabase.auth.signOut(); setProfilePanel(false); notify('已登出') }
   const openComposer = () => { if (!supabase) { notify('尚未連接 Supabase，暫時無法建立內容'); return } if (!sessionEmail) { setAuthOpen(true); return } setCompose(true) }
   const saveProfile = async (name: string) => { if (!supabase) { notify('預覽模式：尚未連接資料庫'); return } const { data: { user } } = await supabase.auth.getUser(); if (!user) { setAuthOpen(true); return } const { error } = await supabase.from('profiles').update({ display_name: name.trim() }).eq('id', user.id); notify(error ? error.message : '個人資料已儲存') }
-  const addThread = () => { if (!supabase || !sessionEmail) { notify('請先登入會員並連接 Supabase'); return } if (!draft.trim()) return; notify('討論寫入功能準備中'); setDraft(''); setCompose(false) }
+  const addThread = async () => { if (!supabase || !sessionEmail) { notify('請先登入會員並連接 Supabase'); return } if (!draft.trim()) return; const { data: { user } } = await supabase.auth.getUser(); if (!user) { notify('登入狀態已失效'); return } const { data: thread, error } = await supabase.from('threads').insert({ title: draft.trim(), created_by: user.id }).select('id').single(); if (error || !thread) { notify(error?.message ?? '討論建立失敗'); return } const post = await supabase.from('posts').insert({ thread_id: thread.id, author_id: user.id, content: draft.trim() }); if (post.error) { notify(post.error.message); return } setDraft(''); setCompose(false); notify('討論已分享給家人'); const refreshed = await supabase.from('threads').select('id,title,created_at,pinned,posts(content,created_at)').order('created_at', { ascending: false }); if (refreshed.data) setThreads(setThreadsFromDatabase(refreshed.data as Array<{ id: string; title: string; created_at: string; pinned: boolean; posts?: Array<{ content: string }> }>)) }
   const titles: Record<Tab, string> = { home: '我們的小天地', discussions: '家庭討論', trips: '下一段旅程', albums: '共享相簿', profile: '你的個人檔案' }
   const glyphs: Record<Tab, string> = { home: '◌', discussions: '▤', trips: '↗', albums: '▦', profile: '◎' }
   return <div className="app-shell">
