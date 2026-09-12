@@ -236,3 +236,6 @@ Owner authorized merging the deployable family-forum branch into master. Verifie
 
 ## [RUN-015] Event (during round A-005)
 Localized the visible family-forum interface to Traditional Chinese without changing layout or interaction logic: navigation, dashboard, discussions, itinerary, albums, profile, dialogs, notifications, and seed content are translated; proper names remain unchanged. npm run build, npm run lint, and npm test all pass.
+
+## [RUN-016] Event (during round A-005)
+Diagnosed member-system complaint: Supabase schema contains auth-linked profiles, bootstrap_family, and RLS policies, but the React frontend has no signUp/signIn/signOut/profile-update calls and therefore cannot register, log in, or persist name changes. Local env variable names are SUPABASE_* rather than the VITE_* names exposed to browser code, so the current Supabase client resolves to null. Database schema existence is not equivalent to an operating member system; auth UI and repository wiring remain required work.
