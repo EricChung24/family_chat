@@ -23,4 +23,4 @@ Copy both values from Supabase **Project Settings → API**. The publishable key
 
 Run `supabase/schema.sql` in the Supabase SQL Editor before using persisted family data. `.env`, `.env.local`, `.env.production`, and `.env.*.local` are ignored by Git; never commit real values.
 
-If the build log says `/vercel/path0/package.json` is missing, the Vercel project is pointing at the wrong repository, branch, or Root Directory. This repository's current `origin/master` contains only the notebook files and has no `package.json`; the deployable app is on the `family-forum` branch. Select branch **`family-forum`**, set Root Directory to `.` (or blank), and redeploy. `vercel.json` pins the build, install, and output settings but cannot override an incorrect Vercel Root Directory.
+If the build log says `/vercel/path0/package.json` is missing, the Vercel project is pointing at the wrong repository, branch, or Root Directory. Select the branch containing this app (currently **`family-forum`**), set Root Directory to `.` (or blank), and redeploy. `vercel.json` pins the build, install, and output settings but cannot override an incorrect Vercel Root Directory.

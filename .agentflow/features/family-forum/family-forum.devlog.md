@@ -284,3 +284,12 @@ Removed the last implicit join-family failure for existing accounts: login now c
 
 ## [RUN-031] Event (during round A-005)
 Improved basic member discoverability: guest users now have a visible `?????` button in the top bar; authenticated users see their display name there and can open the logout panel directly. The existing session listener, logout action, and left-rail member chip remain. Build, lint, and tests pass.
+
+## [RUN-032] Event (during round A-005)
+Selected the all-in full AgentFlow pipeline. Completed profile synchronization cleanup so the real authenticated display name is loaded, edited, and persisted without fabricated profile values; corrected deployment documentation to remove stale branch guidance. `npm run build`, `npm run lint`, and `npm test` pass; lint retains only two non-blocking React effect advisories.
+
+## [RUN-033] Event (during round A-005)
+Full cross-check completed for implementation commit a79dd4b. Build, lint, and security tests remain passing, and Supabase credential boundaries are conformant. The review is BLOCKING on T-4 because Trips and Albums still expose placeholder notifications instead of persisted create/read flows; Host gate and exact Result Go therefore remain open. Changes and review evidence were committed and pushed to origin/family-forum.
+
+## [RUN-034] Event (during round A-005)
+Repository-wide scan found the remaining fabricated profile constants in `src/lib/types.ts` (`Maya Chen`, `Kinfolk`, and preview IDs). Removed them, confirmed no such values remain in source, rebuilt successfully, and pushed implementation commit 71b00f4 to `origin/family-forum`.

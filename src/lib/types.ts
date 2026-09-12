@@ -6,6 +6,3 @@ export type Itinerary = { id: string; family_id: string; title: string; start_da
 export type ItineraryItem = { id: string; itinerary_id: string; day_index: number; start_time: string | null; title: string; note: string | null; location: string | null; order_index: number }
 export type Album = { id: string; family_id: string; title: string }
 export type Photo = { id: string; album_id: string; storage_path: string; uploaded_by: string; caption: string | null; created_at: string }
-
-export const previewProfile: Profile = { id: 'preview-user', family_id: 'preview-family', display_name: 'Maya Chen', avatar_url: null, role: 'admin' }
-export const previewFamily: Family = { id: 'preview-family', name: 'Kinfolk', invite_code: 'PREVIEW' }
