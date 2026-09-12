@@ -6,7 +6,7 @@ import { isSupabaseConfigured } from './lib/supabase'
 import type { User } from '@supabase/supabase-js'
 
 type Tab = 'home' | 'discussions' | 'trips' | 'albums' | 'profile'
-type Thread = { id?: string; title: string; body: string; author: string; time: string; replies: number; tone: string; pinned?: boolean }
+type Thread = { id?: string; title: string; body: string; author: string; authorId?: string; time: string; replies: number; tone: string; pinned?: boolean }
 
 function logSupabaseError(operation: string, error: { message?: string; code?: string; details?: string; hint?: string } | null | undefined) {
   if (!error) return
@@ -15,8 +15,8 @@ function logSupabaseError(operation: string, error: { message?: string; code?: s
 
 const initialThreads: Thread[] = []
 
-function setThreadsFromDatabase(rows: Array<{ id: string; title: string; created_at: string; pinned: boolean; posts?: Array<{ content: string }> }>) {
-  return rows.map((row, index) => ({ id: row.id, title: row.title, body: row.posts?.[0]?.content ?? '尚無內容', author: '家庭成員', time: index === 0 ? '最新' : '較早', replies: row.posts?.length ?? 0, tone: index % 2 ? 'forest' : 'coral', pinned: row.pinned }))
+function setThreadsFromDatabase(rows: Array<{ id: string; title: string; created_at: string; pinned: boolean; created_by?: string; posts?: Array<{ content: string }> }>) {
+  return rows.map((row, index) => ({ id: row.id, title: row.title, body: row.posts?.[0]?.content ?? '尚無內容', author: '家庭成員', authorId: row.created_by, time: index === 0 ? '最新' : '較早', replies: row.posts?.length ?? 0, tone: index % 2 ? 'forest' : 'coral', pinned: row.pinned }))
 }
 
 function App() {
@@ -36,7 +36,7 @@ function App() {
   const [sessionName, setSessionName] = useState('')
   const [authReady, setAuthReady] = useState(false)
   useEffect(() => { if (!supabase) { setAuthReady(true); return } const applyUser = async (current: User | null) => { setSessionEmail(current?.email ?? null); if (!current?.id) { setSessionName(''); setAuthReady(true); return } const fallbackName = String(current.email?.split('@')[0] ?? '會員'); let profile = await supabase.from('profiles').select('display_name').eq('id', current.id).maybeSingle(); logSupabaseError('profiles.select', profile.error); const legacyName = profile.data?.display_name?.trim().toLowerCase() === 'maya chen'; if (!profile.data || legacyName) { const bootstrap = await supabase.rpc('bootstrap_family', { p_display_name: fallbackName }); logSupabaseError('bootstrap_family', bootstrap.error); if (bootstrap.error) { setAuthReady(true); return } profile = await supabase.from('profiles').select('display_name').eq('id', current.id).maybeSingle(); logSupabaseError('profiles.select.retry', profile.error) } setSessionName(profile.data?.display_name ?? fallbackName); setAuthReady(true) }; supabase.auth.getSession().then(({ data, error }) => { logSupabaseError('auth.getSession', error); applyUser(data.session?.user ?? null) }); const { data } = supabase.auth.onAuthStateChange((_event, session) => { applyUser(session?.user ?? null) }); return () => data.subscription.unsubscribe() }, [])
-  useEffect(() => { if (!supabase || !sessionEmail) return; supabase.from('threads').select('id,title,created_at,pinned,posts(content,created_at)').order('created_at', { ascending: false }).then(({ data, error }) => { if (error || !data) return; setThreads(setThreadsFromDatabase(data as Array<{ id: string; title: string; created_at: string; pinned: boolean; posts?: Array<{ content: string }> }>)) }) }, [sessionEmail])
+  useEffect(() => { if (!supabase || !sessionEmail) return; supabase.from('threads').select('id,title,created_at,pinned,created_by,posts(content,created_at)').order('created_at', { ascending: false }).then(({ data, error }) => { if (error || !data) return; setThreads(setThreadsFromDatabase(data as Array<{ id: string; title: string; created_at: string; pinned: boolean; created_by?: string; posts?: Array<{ content: string }> }>)) }) }, [sessionEmail])
   const notify = (message: string) => { setToast(message); window.setTimeout(() => setToast(''), 2400) }
   const submitAuth = async () => { if (!supabase || !email.trim() || !password) return; setAuthBusy(true); const result = authMode === 'login' ? await supabase.auth.signInWithPassword({ email: email.trim(), password }) : await supabase.auth.signUp({ email: email.trim(), password, options: { data: { display_name: displayName.trim(), }, emailRedirectTo: window.location.origin } }); if (result.error) { notify(result.error.message); setAuthBusy(false); return } if (!result.data.user || !result.data.session) { if (authMode === 'signup') { notify('註冊成功，請先到信箱完成驗證，再回來登入'); setAuthMode('login') } else notify('登入未建立工作階段，請重新嘗試'); setAuthBusy(false); return } const memberName = authMode === 'signup' ? displayName.trim() : email.trim().split('@')[0]; const bootstrap = await supabase.rpc('bootstrap_family', { p_display_name: memberName }); if (bootstrap.error) { notify(`會員資料同步失敗：${bootstrap.error.message}`); setAuthBusy(false); return } notify(authMode === 'login' ? '登入成功' : '註冊成功'); setSessionEmail(result.data.user.email ?? email.trim()); setSessionName(memberName); setAuthOpen(false); setCompose(false); setProfilePanel(false); setTab('home'); setAuthBusy(false) }
   const signOut = async () => { if (supabase) await supabase.auth.signOut(); setSessionEmail(null); setSessionName(''); setThreads([]); setProfilePanel(false); setTab('home'); notify('已登出') }
