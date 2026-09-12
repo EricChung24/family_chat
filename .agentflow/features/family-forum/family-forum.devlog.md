@@ -227,3 +227,6 @@ Investigated Vercel `vite: command not found`: package.json already includes vit
 
 ## [RUN-012] Event (during round A-005)
 Diagnosed Vercel ENOENT: the repository root contains package.json, so `/vercel/path0/package.json` indicates an incorrect Vercel repository/branch/Root Directory setting rather than a missing dependency. Added root vercel.json pinning `npm install`, `npm run build`, and `dist`; expanded DEPLOYMENT.md with the root-directory diagnosis. JSON validation, npm run build, and git diff --check pass. UI and feature code unchanged.
+
+## [RUN-013] Event (during round A-005)
+Remote branch inspection proved the deployment source mismatch: origin/master has no package.json, while origin/family-forum contains the complete Vite app, package.json, package-lock.json, and vercel.json. Updated DEPLOYMENT.md with the exact branch correction. No source/UI changes; Vercel must deploy family-forum or the app branch must be intentionally merged into master by the owner.
