@@ -230,3 +230,9 @@ Diagnosed Vercel ENOENT: the repository root contains package.json, so `/vercel/
 
 ## [RUN-013] Event (during round A-005)
 Remote branch inspection proved the deployment source mismatch: origin/master has no package.json, while origin/family-forum contains the complete Vite app, package.json, package-lock.json, and vercel.json. Updated DEPLOYMENT.md with the exact branch correction. No source/UI changes; Vercel must deploy family-forum or the app branch must be intentionally merged into master by the owner.
+
+## [RUN-014] Event (during round A-005)
+Owner authorized merging the deployable family-forum branch into master. Verified master previously lacked package.json while family-forum contained the Vite app; merged with a non-fast-forward commit and pushed origin/master. Remote master now resolves to a commit containing package.json and vercel.json, so the prior `/vercel/path0/package.json` ENOENT source mismatch is corrected.
+
+## [RUN-015] Event (during round A-005)
+Localized the visible family-forum interface to Traditional Chinese without changing layout or interaction logic: navigation, dashboard, discussions, itinerary, albums, profile, dialogs, notifications, and seed content are translated; proper names remain unchanged. npm run build, npm run lint, and npm test all pass.
