@@ -233,3 +233,6 @@ Remote branch inspection proved the deployment source mismatch: origin/master ha
 
 ## [RUN-014] Event (during round A-005)
 Owner authorized merging the deployable family-forum branch into master. Verified master previously lacked package.json while family-forum contained the Vite app; merged with a non-fast-forward commit and pushed origin/master. Remote master now resolves to a commit containing package.json and vercel.json, so the prior `/vercel/path0/package.json` ENOENT source mismatch is corrected.
+
+## [RUN-015] Event (during round A-005)
+Localized the visible family-forum interface to Traditional Chinese without changing layout or interaction logic: navigation, dashboard, discussions, itinerary, albums, profile, dialogs, notifications, and seed content are translated; proper names remain unchanged. npm run build, npm run lint, and npm test all pass.
