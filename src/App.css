@@ -4,3 +4,4 @@
 :root{--paper:#111816;--ink:#f4efe6;--muted:#a5b0a9;--forest:#5d9b82;--moss:#9ab69a;--coral:#e58a67;--line:#30413a;--white:#1d2824;--shadow:0 14px 40px #0008;color-scheme:dark}
 body{background:var(--paper);color:var(--ink)}
 .rail{background:#111816e8}.family-switcher:hover,.thread-card:hover,.thread-card:focus{background:#24332d}.note-card,.day-number{background:#29362f}.setting-card,.album-card{background:#18231f}.setting-card.accent{background:#3a302b}.composer-modal,.quick-panel,.thread-modal{background:#18231f}.composer-modal textarea,.auth-input,.comment-box input,.day-item{background:#111816;color:var(--ink)}.mobile-nav{background:#18231fee}.breadcrumb b,.family-switcher b,.thread-body h3,.album-caption b,.setting-card h3{color:var(--ink)}
+.empty-state{display:grid;place-items:center;min-height:120px;padding:24px;border:1px dashed var(--line);border-radius:14px;color:var(--muted);font-size:13px;text-align:center}
