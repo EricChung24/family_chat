@@ -1,0 +1,12 @@
+{
+  "changed_files": [
+    ".agentflow/features/family-forum/family-forum.devlog.md"
+  ],
+  "changed_lines": 10,
+  "behavior_change": false,
+  "trust_boundary": false,
+  "broad_change": false,
+  "consequential_change": false,
+  "workspace_layout_change": false,
+  "owner_control": "default"
+}
