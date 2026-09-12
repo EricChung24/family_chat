@@ -209,3 +209,6 @@ Discussion detail and local comment flow are implemented and committed at c0fee3
 
 ## [RUN-006] Event (during round A-005)
 Owner supplied local Supabase configuration without requesting credential logging. Coordinator verified both environment variables are present and `.env.local` is Git-ignored; a credential-free output check against the configured REST endpoint returned HTTP 401, so the endpoint is reachable but the key/project pairing is not accepted by the API yet. No credential value was emitted or recorded. Preview mode remains safe; T-4/T-5/T-6 remain open.
+
+## [RUN-007] Event (during round A-005)
+Owner resubmitted the local Supabase configuration. The credential-safe verification reran without exposing values: the REST probe was unreachable during this attempt, while npm run build passed. This is an external/network availability result, not evidence of credential validity; preview mode and local build remain healthy.
