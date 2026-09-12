@@ -5,3 +5,4 @@
 body{background:var(--paper);color:var(--ink)}
 .rail{background:#111816e8}.family-switcher:hover,.thread-card:hover,.thread-card:focus{background:#24332d}.note-card,.day-number{background:#29362f}.setting-card,.album-card{background:#18231f}.setting-card.accent{background:#3a302b}.composer-modal,.quick-panel,.thread-modal{background:#18231f}.composer-modal textarea,.auth-input,.comment-box input,.day-item{background:#111816;color:var(--ink)}.mobile-nav{background:#18231fee}.breadcrumb b,.family-switcher b,.thread-body h3,.album-caption b,.setting-card h3{color:var(--ink)}
 .empty-state{display:grid;place-items:center;min-height:120px;padding:24px;border:1px dashed var(--line);border-radius:14px;color:var(--muted);font-size:13px;text-align:center}
+body,button,input,textarea,select{font-family:"俐方體11號","Noto Sans TC","Microsoft JhengHei",sans-serif;font-size:11pt}.composer-modal textarea,.article-editor textarea{line-height:1.8;letter-spacing:.02em}
