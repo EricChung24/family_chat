@@ -278,3 +278,6 @@ Completed discussion persistence: opening a thread now loads its posts from Supa
 
 ## [RUN-029] Event (during round A-005)
 Simplified the product to one shared family space as requested: removed family-name input and all join/invite semantics from signup, fixed the registered household to ????, and updated bootstrap_family to reuse the first existing family or create the single default family. Build, lint, and tests pass; the remaining lint output is one non-blocking React effect advisory.
+
+## [RUN-030] Event (during round A-005)
+Removed the last implicit join-family failure for existing accounts: login now calls the singleton bootstrap RPC too, which upserts the user's profile into ????; posting only reports a sync retry if membership data is genuinely unavailable. Signup/login no longer ask users to create or join a family. Build, lint, and tests pass.
