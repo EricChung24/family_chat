@@ -8,15 +8,15 @@
 
 - **Goal:** Build the specified responsive React, Supabase, and Vercel family-forum MVP.
 
-- **Last update:** 2026-09-12 01:28:00 Asia/Taipei.
+- **Last update:** 2026-09-12 08:00:00 Asia/Taipei.
 
-- **Evidence commit:** c0fee3c2ac2ad103a85275727f2c6ccb0864093d.
+- **Evidence commit:** bb5e8d8b449290d390a07916ffc47328105057f9.
 
 ## Overall state
 
 - **State:** active.
 
-- **Reason:** Design must be frozen before source implementation.
+- **Reason:** Full review found itinerary and album flows are still placeholders.
 
 - **Total:** 6.
 
@@ -46,11 +46,11 @@
 
 - **Current item:** T-4.
 
-- **Last proven result:** T-3 SQL/RLS/storage boundary and typed Supabase client pass focused tests; `npm test` has 2 passing tests and T-4 discussion detail/comment interaction is committed at c0fee3c2ac2ad103a85275727f2c6ccb0864093d.
+- **Last proven result:** Auth/bootstrap, profile persistence, discussion creation/replies, Vite build, lint completion, and 2 security tests pass at bb5e8d8.
 
 - **Active blocker or running process:** None.
 
-- **Next safe action:** Add persisted repository reads/writes and auth/bootstrap UI, then run the complete browser journey.
+- **Next safe action:** Implement persisted itinerary and album create/read flows, then rerun the full acceptance and cross-check gates.
 
 - **Expected changed files:** .agentflow/features/family-forum/artifacts/A-003-family-forum-mvp/design.md; .agentflow/features/family-forum/artifacts/A-003-family-forum-mvp/tracker.md; application source and tests after Design Go; Supabase SQL; deployment documentation; stream notebook.
 
@@ -62,7 +62,7 @@
 
 - **Operation running:** no.
 
-- **Next action remaining:** T-1.
+- **Next action remaining:** T-4, T-5, T-6.
 
 - **Evidence status:** current.
 
