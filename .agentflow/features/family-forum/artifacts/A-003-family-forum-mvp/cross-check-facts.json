@@ -1,0 +1,12 @@
+{
+  "changed_files": [".env.example", ".gitignore", ".oxlintrc.json", "README.md", "index.html", "package-lock.json", "package.json", "public/favicon.svg", "public/icons.svg", "src/App.css", "src/App.tsx", "src/assets/hero.png", "src/assets/react.svg", "src/assets/vite.svg", "src/index.css", "src/lib/supabase.ts", "src/lib/supabaseClient.ts", "src/lib/types.ts", "src/main.tsx", "supabase/schema.sql", "tsconfig.app.json", "tsconfig.json", "tsconfig.node.json", "vite.config.ts"],
+  "changed_lines": 1805,
+  "behavior_change": true,
+  "trust_boundary": true,
+  "broad_change": true,
+  "consequential_change": true,
+  "original_ask_path": ".agentflow/features/family-forum/family-forum.devlog.md",
+  "normal_journey_path": ".agentflow/features/family-forum/artifacts/A-003-family-forum-mvp/design.md",
+  "workspace_layout_change": false,
+  "owner_control": "default"
+}
