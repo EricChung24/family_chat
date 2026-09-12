@@ -257,3 +257,6 @@ Adjusted guest/member UX per owner request: removed the default Maya Chen profil
 
 ## [RUN-022] Event (during round A-005)
 Fixed Supabase schema rerun failure (`42710 policy already exists`) by adding DROP POLICY IF EXISTS statements for all public and storage policies before recreation. The schema is now idempotent for repeated SQL Editor runs. npm test, npm run build, and git diff --check pass. Owner can rerun the full supabase/schema.sql safely.
+
+## [RUN-023] Event (during round A-005)
+Removed all preview seed content and renamed the brand to ????. Guest home/discussions/trips/albums/profile now show empty states instead of fabricated family data; posting is blocked unless Supabase is configured and a member session exists. Signup no longer displays an invite-code field, and the database bootstrap generates an internal code when omitted. Build, lint, and tests pass.
