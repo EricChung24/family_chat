@@ -78,6 +78,7 @@ function ArticleDetailPage({ id, userId, sessionEmail, notify, onBack }: { id: s
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
   const [reply, setReply] = useState('')
+  const [liveUserId, setLiveUserId] = useState<string | null>(userId)
   const load = async () => {
     if (!supabase) { setLoading(false); return }
     const result = await supabase.from('threads').select('id,title,created_at,created_by,posts(id,content,created_at,user_id)').eq('id', id).maybeSingle()
@@ -94,33 +95,33 @@ function ArticleDetailPage({ id, userId, sessionEmail, notify, onBack }: { id: s
     setReplies(rows.slice(1).map(row => ({ ...row, author: names.get(row.user_id) ?? '會員' })))
     setTitle(result.data.title); setContent(first.content); setLoading(false)
   }
-  useEffect(() => { void load() }, [id])
+  useEffect(() => { setLiveUserId(userId); if (supabase) void supabase.auth.getUser().then(({ data }) => setLiveUserId(data.user?.id ?? null)); void load() }, [id, userId])
   const save = async () => {
-    if (!supabase || !post || post.authorId !== userId || !title.trim() || !content.trim()) return
-    const threadUpdate = await supabase.from('threads').update({ title: title.trim() }).eq('id', id).eq('created_by', userId)
+    if (!supabase || !post || post.authorId !== liveUserId || !liveUserId || !title.trim() || !content.trim()) return
+    const threadUpdate = await supabase.from('threads').update({ title: title.trim() }).eq('id', id).eq('created_by', liveUserId)
     logSupabaseError('thread.update', threadUpdate.error)
     if (threadUpdate.error) { notify(threadUpdate.error.message); return }
-    const postUpdate = await supabase.from('posts').update({ content: content.trim() }).eq('thread_id', id).eq('user_id', userId)
+    const postUpdate = await supabase.from('posts').update({ content: content.trim() }).eq('thread_id', id).eq('user_id', liveUserId)
     logSupabaseError('post.update', postUpdate.error)
     if (postUpdate.error) { notify(postUpdate.error.message); return }
     setPost({ ...post, title: title.trim(), content: content.trim() }); setEditing(false); notify('文章已更新')
   }
   const remove = async () => {
-    if (!supabase || !post || post.authorId !== userId || !window.confirm('確定要刪除這篇文章嗎？刪除後無法復原。')) return
-    const result = await supabase.from('threads').delete().eq('id', id).eq('created_by', userId)
+    if (!supabase || !post || post.authorId !== liveUserId || !liveUserId || !window.confirm('確定要刪除這篇文章嗎？刪除後無法復原。')) return
+    const result = await supabase.from('threads').delete().eq('id', id).eq('created_by', liveUserId)
     logSupabaseError('thread.delete', result.error)
     if (result.error) notify(result.error.message); else { notify('文章已刪除'); onBack() }
   }
   const addReply = async () => {
-    if (!supabase || !userId || !reply.trim()) { notify('登入後才能留言'); return }
-    const result = await supabase.from('posts').insert({ thread_id: id, user_id: userId, content: reply.trim() }).select('id,content,created_at,user_id').single()
+    if (!supabase || !liveUserId || !reply.trim()) { notify('登入後才能留言'); return }
+    const result = await supabase.from('posts').insert({ thread_id: id, user_id: liveUserId, content: reply.trim() }).select('id,content,created_at,user_id').single()
     logSupabaseError('post.reply', result.error)
     if (result.error || !result.data) { notify(result.error?.message ?? '留言失敗'); return }
     setReplies(current => [...current, { ...result.data, author: '我' }]); setReply(''); notify('留言已發布')
   }
   if (loading) return <div className="empty-state"><p>文章載入中…</p></div>
   if (!post) return <div className="empty-state"><p>找不到這篇文章</p><button className="button ghost" onClick={onBack}>返回討論區</button></div>
-  const owner = post.authorId === userId
+  const owner = post.authorId === liveUserId
   return <section className="article-detail"><button className="text-button" onClick={onBack}>← 返回討論區</button><div className="article-layout"><aside className="author-panel"><div className="avatar avatar-large">{post.authorName[0]}</div><h3>{post.authorName}</h3><p className="muted">家庭會員</p><p className="muted">作者 ID：{post.authorId.slice(0, 8)}…</p></aside><article className="article-content"><div className="article-actions">{owner && <><button className="button ghost" onClick={() => setEditing(value => !value)}>編輯文章</button><button className="button ghost danger-button" onClick={remove}>刪除文章</button></>}</div>{editing ? <div className="article-editor"><input className="auth-input" value={title} onChange={event => setTitle(event.target.value)} aria-label="文章標題" /><textarea value={content} onChange={event => setContent(event.target.value)} aria-label="文章內容" /><button className="button primary" onClick={save}>儲存文章</button></div> : <><h1>{post.title}</h1><p className="muted">{new Date(post.createdAt).toLocaleString('zh-TW')}</p><p className="modal-body article-body">{post.content}</p></>}</article></div><div className="comment-stack"><h2>留言／回覆</h2>{replies.length ? replies.map(item => <div className="comment-item" key={item.id}><div className="avatar">{item.author[0]}</div><div><b>{item.author}</b><small>{new Date(item.created_at).toLocaleString('zh-TW')}</small><p>{item.content}</p></div></div>) : <p className="muted">目前還沒有留言。</p>}{sessionEmail ? <div className="comment-box"><input value={reply} onChange={event => setReply(event.target.value)} placeholder="寫下你的留言…" onKeyDown={event => event.key === 'Enter' && void addReply()} /><button className="button primary" onClick={addReply}>留言</button></div> : <p className="muted">登入後即可留言。</p>}</div></section>
 }
 function ThreadCard({ thread, onClick }: { thread: Thread; onClick: () => void }) { return <article className="thread-card" onClick={onClick} tabIndex={0} onKeyDown={(e) => e.key === 'Enter' && onClick()}><div className={`thread-marker ${thread.tone}`}>{thread.author[0]}</div><div className="thread-body"><div className="thread-meta">{thread.author} · {thread.time}{thread.pinned && <b className="pinned">置頂</b>}</div><h3>{thread.title}</h3><p>{thread.body}</p><div className="thread-footer">□ {thread.replies} 則回覆 <span>↗</span></div></div></article> }
