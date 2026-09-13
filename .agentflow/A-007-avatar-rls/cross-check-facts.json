@@ -1,0 +1,10 @@
+{
+  "changed_files": ["src/App.tsx", "tests/security.test.mjs"],
+  "changed_lines": 10,
+  "behavior_change": true,
+  "trust_boundary": false,
+  "broad_change": false,
+  "consequential_change": false,
+  "owner_control": "skip-review",
+  "skip_reason": "已接受完整測試通過後略過重複審查"
+}

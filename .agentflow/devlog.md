@@ -4,19 +4,19 @@ Project: solot
 
 Notebook: .agentflow/devlog.md — root.
 
-Current commit: family-forum stream authorization closeout on master.
+Current commit: 8a6afdc — avatar Storage path minimality correction on master; Agentflow records pending commit.
 
-Tests/scenarios: stream authorization intake and AgentFlow terminal preflight.
+Tests/scenarios: npm test 3/3; typecheck PASS; lint exit 0 with existing warnings; production build PASS.
 
 Configuration: ag.json — schema v7; validated for codex this round.
 
-Proven: public repository EricChung24/family_chat exists and is configured as origin.
+Proven: avatar uploads now use family_id/user_id/avatar-* and match the existing Supabase Storage RLS policy.
 
-Open: application source is not implemented; family-forum stream creation is authorized and pending.
+Open: none for A-007; live Supabase upload will be available after the master deployment completes.
 
-Next: commit and push this round, then run the exact AgentFlow new-feature CLI for family-forum.
+Next: commit Agentflow records and push master to origin.
 
-Artifacts: A-003 structured specification; public GitHub repository https://github.com/EricChung24/family_chat.
+Artifacts: .agentflow/A-007-avatar-rls; implementation commits e9c1c5c and 8a6afdc.
 
 Archived eras: none.
 
@@ -600,5 +600,62 @@ GitHub CLI 2.100.0 已安裝並透過官方裝置流程完成授權。沒有將�
 ---
 
 # → Ask / A-007
+
++ godev 圖片上傳出現儲存變更
+
++ new row violates row-level security policy✓
++ 出現
+
++ skip-review: 已接受完整測試通過後略過重複審查
+
+## [RUN-001] Event ? 2026-09-13 12:00:00 +08:00 (during round A-007)
+
+- Route: direct, scoped to the reported avatar upload RLS failure.
+- Reproduced the contract mismatch: storage policies require family_id as the first folder, while the client uploaded under user_id.
+- Added a regression test, observed it fail, then changed the upload path to family_id/user_id/avatar-* and added a guarded profile lookup.
+- Verification passes: npm test (3/3), typecheck, lint (existing warnings only), and production build.
+
+## [RUN-002] Event ? 2026-09-13 14:05:00 +08:00 (during round A-007)
+
+- Independent targeted review confirmed Outcome PASS and Conformance PASS, but returned Minimality BLOCKING because the first regression assertion required an unused family_id field in the avatar-display query.
+- Applied and committed the smallest correction at 8a6afdc: removed the unused display-query field and made the assertion target the upload lookup itself.
+- Reverification passes: npm test (3/3), typecheck, lint (existing warnings only), and production build.
+- The corrected implementation cannot receive another external review automatically because the fixed attempt ceiling has been reached after runner transport/policy retries. No push was performed; owner direction is required to record an explicit skip-review tradeoff or resume with a fresh review authorization.
+
+## [RUN-003] Event ? 2026-09-13 14:10:00 +08:00 (during round A-007)
+
+- Owner explicitly supplied `skip-review: ????????????????` for the corrected implementation.
+- Cross-check planning accepted the skip control; tradeoff: rely on the previously completed targeted review plus the host's green complete suite after the two-line minimality correction, without starting another independent review.
+- Host gate: PASS for commit 8a6afdc based on the explicit owner control, direct diff inspection, and passing npm test, typecheck, lint exit 0, and production build evidence.
+- Next action: commit the Agentflow records, update STATUS, run terminal preflight, and push master.
+
+# ← Reply / A-007
+
+2026-09-13 14:11:00 +08:00 — GPT-5 Codex
+
+## [SUMMARY]
+
+- Fixed the avatar upload RLS failure by making the Storage object path start with the authenticated member's `family_id`.
+- Added regression coverage and verified 3/3 tests, typecheck, lint exit 0, and the production build.
+- Recorded the owner's explicit `skip-review` tradeoff for the corrected two-line minimality change.
+- Implementation commits: e9c1c5c and 8a6afdc; master is ready to push.
+
+## [FINAL REPORT]
+
+The reported `new row violates row-level security policy` error was caused by a mismatch between the client upload path and the Supabase Storage policy. The policy requires the first path folder to be `family_id`, but avatar uploads used `user_id` as the first folder.
+
+The upload now obtains the signed-in user's `family_id`, stops with a clear notification if the profile is unavailable, and writes avatars under `family_id/user_id/avatar-*`. This matches the existing family-scoped read and insert policies without weakening RLS.
+
+A regression test first demonstrated the mismatch and now verifies both the family lookup and the family-first path. Final host verification passed: `npm test` 3/3, `npm run typecheck`, `npm run lint` with exit 0 and existing warnings only, and `npm run build`.
+
+The independent targeted review confirmed Outcome PASS and Conformance PASS, then requested removal of one unused selected field. That two-line correction was applied in 8a6afdc and the complete suite was rerun successfully. The owner explicitly accepted `skip-review: 已接受完整測試通過後略過重複審查`, so no further duplicate external review is required.
+
+## Questions (batched — each with a suggested default)
+
+- None.
+
+---
+
+# → Ask / A-008
 
 +
