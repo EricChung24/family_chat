@@ -1,32 +1,62 @@
-# React + TypeScript + Vite
+# Family Chat
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+![English demo](./demo-en.png)
 
-Currently, two official plugins are available:
+> A private, shared family space for discussions, memories, albums, and trips.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+[繁體中文 README](./README.zh-TW.md)
 
-## React Compiler
+## Overview
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Family Chat is a responsive React web app for a small, trusted family group. Members can publish rich-text posts, discuss them, upload album photos with metadata, plan itineraries, and manage their profile identity.
 
-## Expanding the Oxlint configuration
+## Features
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+- **Family discussions** — rich-text posts, formatted previews, author profiles, avatars, titles/badges, post counts, and original-poster labels.
+- **Comments and replies** — persistent Supabase-backed post conversations with author identity and rich content.
+- **Shared albums** — create, browse, edit, and delete albums; upload photos; view photos in a lightbox; save location and text descriptions; delete photos.
+- **Family trips** — create and browse itineraries with start and end dates.
+- **Profiles** — edit display name, avatar, title/badge color and size.
+- **Responsive UI** — dark glassmorphism styling, mobile navigation, desktop rail controls, and accessible buttons/labels.
+- **Secure uploads** — images are stored under the authenticated family scope in Supabase Storage, with client-side type and size checks.
 
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+## Technical specifications
+
+| Layer | Technology |
+| --- | --- |
+| Frontend | React 18, TypeScript, Vite |
+| Styling | CSS, responsive layouts, glassmorphism theme |
+| Rich text | `react-quill-new` / Quill |
+| Icons | `lucide-react` |
+| Backend | Supabase Auth, PostgreSQL, Row Level Security |
+| Media | Supabase Storage (`family-photos`) with signed URLs |
+| Hosting | Vercel SPA deployment |
+| Quality | TypeScript build/typecheck and Node security tests |
+
+## Local development
+
+```bash
+npm install
+npm run dev
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+Create `.env.local` with `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`, run [`supabase/schema.sql`](./supabase/schema.sql), then apply the migrations in `supabase/migrations/` in order.
+
+```bash
+npm run typecheck
+npm run build
+npm test
+```
+
+## Demo screenshots
+
+- [English demo](./demo-en.png)
+- [繁體中文 demo](./demo-zh-TW.png)
+
+## Deployment
+
+Connect the repository to Vercel, select `master` as the production branch, configure the Vite environment variables, and deploy. See [`DEPLOYMENT.md`](./DEPLOYMENT.md).
+
+## License
+
+Private family project. Add a license before redistributing.
