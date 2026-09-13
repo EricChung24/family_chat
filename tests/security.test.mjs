@@ -24,3 +24,9 @@ test('avatar uploads use the family id as the first storage folder', () => {
   assert.match(app, /const profile = await supabase\.from\('profiles'\)\.select\('family_id'\)/)
   assert.match(app, /`\$\{profileFamilyId\}\/\$\{userId\}\/avatar-/)
 })
+
+test('discussion cards and article authors render stored avatars', () => {
+  assert.match(app, /select\('id,display_name,avatar_url'\)/)
+  assert.match(app, /<Avatar src=\{thread\.avatarUrl\}/)
+  assert.match(app, /<Avatar src=\{post\.authorAvatarUrl\}/)
+})
