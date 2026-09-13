@@ -36,4 +36,5 @@ test('discussion cards and article authors render stored avatars', () => {
 
 test('the interface uses WenDing ZhongLi as its primary font', () => {
   assert.match(css, /font-family:\s*"文鼎中隸"/)
+  assert.match(css, /url\("\/fonts\/文鼎中隸\.ttf"\)/)
 })
