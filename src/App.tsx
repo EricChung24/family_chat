@@ -126,6 +126,7 @@ function ArticleDetailPage({ id, userId, sessionEmail, avatarUrl, notify, onBack
   }
   useEffect(() => { setLiveUserId(userId); if (supabase) void supabase.auth.getUser().then(({ data }) => setLiveUserId(data.user?.id ?? null)); void load() }, [id, userId])
   useEffect(() => { const node = document.querySelector('.author-panel .muted:first-of-type'); if (node) node.textContent = authorBadge || '家庭成員' }, [authorBadge])
+  useEffect(() => { if (!userId) return; const syncLocalBadge = () => { if (post?.authorId === userId) { const value = window.localStorage.getItem('profile-title-badge'); if (value) setAuthorBadge(value) } }; const timer = window.setInterval(syncLocalBadge, 500); return () => window.clearInterval(timer) }, [post?.authorId, userId])
   useEffect(() => { const node = document.querySelector('.author-panel .muted:last-of-type'); if (node) node.textContent = `發文數量：${authorPostCount}\n作者 ID：${post?.authorId.slice(0, 8) ?? ''}…` }, [authorPostCount, post?.authorId])
   const save = async () => {
     if (!supabase || !post || post.authorId !== liveUserId || !liveUserId || !title.trim() || !content.trim()) return
