@@ -11,7 +11,8 @@ alter table public.albums add column if not exists description text not null def
 alter table public.profiles add column if not exists title_badge text not null default '';
 alter table public.profiles add column if not exists title_color text not null default '#285c4d';
 alter table public.profiles add column if not exists title_size text not null default 'medium';
-create table if not exists public.photos (id uuid primary key default gen_random_uuid(), album_id uuid not null references public.albums(id) on delete cascade, storage_path text not null, uploaded_by uuid not null references public.profiles(id), caption text, created_at timestamptz not null default now());
+create table if not exists public.photos (id uuid primary key default gen_random_uuid(), album_id uuid not null references public.albums(id) on delete cascade, storage_path text not null, uploaded_by uuid not null references public.profiles(id), caption text, location text not null default '', created_at timestamptz not null default now());
+alter table public.photos add column if not exists location text not null default '';
 
 create index if not exists profiles_family_id_idx on public.profiles(family_id);
 create index if not exists threads_family_id_created_at_idx on public.threads(family_id, created_at desc);
