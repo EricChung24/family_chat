@@ -17,6 +17,7 @@ test('policies derive access from the authenticated family scope', () => {
   assert.match(schema, /my_family_id\(\)/)
   assert.match(schema, /family members read photos/)
   assert.match(schema, /family members upload photos/)
+  assert.match(schema, /alter table public\.albums add column if not exists description/)
   assert.match(schema, /bootstrap_family/)
   assert.doesNotMatch(schema, /service-role/i)
 })
@@ -36,4 +37,15 @@ test('discussion cards and article authors render stored avatars', () => {
 
 test('the interface uses Cubic 11 as its primary font', () => {
   assert.match(css, /font-family:\s*"俐方體11號"/)
+})
+
+test('albums support detail browsing, photo upload, and image comments', () => {
+  assert.match(schema, /create table if not exists public\.photos/)
+  assert.match(app, /← 返回相簿/)
+  assert.match(app, /新增照片/)
+  assert.match(app, /圖片留言/)
+  assert.match(app, /storage\.from\('family-photos'\)\.upload\(path, file/)
+  assert.match(app, /const saveEditor = async/)
+  assert.match(app, /const deleteAlbum = async/)
+  assert.match(app, /const deletePhoto = async/)
 })
