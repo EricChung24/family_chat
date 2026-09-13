@@ -76,6 +76,17 @@ The client is intentionally thin: family membership and authorization are enforc
 | `npm run build` | Create the production bundle |
 | `npm test` | Run security and repository tests |
 
+## 🔄 Development workflow
+
+1. Create a focused feature branch from `master`.
+2. Update the React UI and keep Supabase changes in a numbered migration.
+3. Run `npm run typecheck`, `npm run build`, and `npm test` locally.
+4. Review the responsive layout and both language experiences.
+5. Commit with a clear message and open a pull request.
+6. Merge to `master` only after checks pass; Vercel then creates the production deployment.
+
+Database changes should be backwards-compatible whenever possible. Never commit `.env.local`, service-role keys, or private media.
+
 ## 🛠️ Troubleshooting
 
 - **Empty content:** confirm the user is authenticated and has a `profiles.family_id`.

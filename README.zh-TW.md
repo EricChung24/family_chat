@@ -76,6 +76,17 @@ React + TypeScript + Vite
 | `npm run build` | 建立正式版本 bundle |
 | `npm test` | 執行安全性與 repository 測試 |
 
+## 🔄 開發流程
+
+1. 從 `master` 建立專注於單一功能的分支。
+2. 修改 React 介面，Supabase 資料庫變更則建立編號 migration。
+3. 在本機執行 `npm run typecheck`、`npm run build` 與 `npm test`。
+4. 檢查響應式版面，以及英文與繁體中文介面。
+5. 使用清楚的 commit 訊息提交，並建立 pull request。
+6. 檢查通過後合併至 `master`，Vercel 會自動建立正式部署。
+
+資料庫變更應盡量保持向後相容。請勿提交 `.env.local`、service-role key 或私人媒體檔案。
+
 ## 🛠️ 疑難排解
 
 - **內容空白：** 確認已登入，且 `profiles.family_id` 存在。
