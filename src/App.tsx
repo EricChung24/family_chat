@@ -94,6 +94,7 @@ function ArticleDetailPage({ id, userId, sessionEmail, avatarUrl, notify, onBack
   const [content, setContent] = useState('')
   const [reply, setReply] = useState('')
   const [liveUserId, setLiveUserId] = useState<string | null>(userId)
+  const [authorBadge, setAuthorBadge] = useState('')
   const load = async () => {
     if (!supabase) { setLoading(false); return }
     const result = await supabase.from('threads').select('id,title,created_at,created_by,posts(id,content,created_at,user_id)').eq('id', id).maybeSingle()
@@ -101,17 +102,19 @@ function ArticleDetailPage({ id, userId, sessionEmail, avatarUrl, notify, onBack
     if (result.error || !result.data) { setLoading(false); return }
     const rows = (result.data.posts ?? []) as Array<{ id: string; content: string; created_at: string; user_id: string }>
     const profileIds = [...new Set([result.data.created_by, ...rows.map(row => row.user_id)])]
-    const profiles = await supabase.from('profiles').select('id,display_name,avatar_url').in('id', profileIds)
+    const profiles = await supabase.from('profiles').select('id,display_name,avatar_url,title_badge').in('id', profileIds)
     logSupabaseError('thread.detail.profiles', profiles.error)
     const names = new Map((profiles.data ?? []).map(profile => [profile.id, profile.display_name || '會員']))
     const first = rows[0]
     if (!first) { setLoading(false); return }
     const authorProfile = (profiles.data ?? []).find(profile => profile.id === result.data?.created_by)
+    setAuthorBadge(authorProfile?.title_badge ?? '')
     setPost({ title: result.data.title, content: decodeRichHtml(first.content), authorId: result.data.created_by, createdAt: result.data.created_at, authorName: names.get(result.data.created_by) ?? '會員', authorAvatarUrl: authorProfile?.avatar_url })
     setReplies(rows.slice(1).map(row => ({ ...row, content: decodeRichHtml(row.content), author: names.get(row.user_id) ?? '會員', avatarUrl: (profiles.data ?? []).find(profile => profile.id === row.user_id)?.avatar_url })))
     setTitle(result.data.title); setContent(first.content); setLoading(false)
   }
   useEffect(() => { setLiveUserId(userId); if (supabase) void supabase.auth.getUser().then(({ data }) => setLiveUserId(data.user?.id ?? null)); void load() }, [id, userId])
+  useEffect(() => { const node = document.querySelector('.author-panel .muted:first-of-type'); if (node) node.textContent = authorBadge || '家庭會員' }, [authorBadge])
   const save = async () => {
     if (!supabase || !post || post.authorId !== liveUserId || !liveUserId || !title.trim() || !content.trim()) return
     const threadUpdate = await supabase.from('threads').update({ title: title.trim() }).eq('id', id).eq('created_by', liveUserId)
