@@ -4,24 +4,19 @@ import './Thread.css'
 import { supabase } from './lib/supabaseClient'
 import { isSupabaseConfigured } from './lib/supabase'
 import type { User } from '@supabase/supabase-js'
-import { useEditor, EditorContent } from '@tiptap/react'
-import StarterKit from '@tiptap/starter-kit'
-import Image from '@tiptap/extension-image'
-import { TextStyle } from '@tiptap/extension-text-style'
-import FontFamily from '@tiptap/extension-font-family'
-import Color from '@tiptap/extension-color'
-import TextAlign from '@tiptap/extension-text-align'
+import { useRef } from 'react'
+import ReactQuill from 'react-quill-new'
+import 'react-quill-new/dist/quill.snow.css'
 
 type Tab = 'home' | 'discussions' | 'trips' | 'albums'
 type Thread = { id?: string; title: string; body: string; author: string; authorId?: string; avatarUrl?: string | null; time: string; replies: number; tone: string; pinned?: boolean }
 type ProfileInfo = { displayName: string; avatarUrl?: string | null }
 
 function RichTextEditor({ value, onChange, onImageUpload, placeholder }: { value: string; onChange: (html: string) => void; onImageUpload?: (file: File) => Promise<string | null>; placeholder: string }) {
-  const editor = useEditor({ extensions: [StarterKit, Image, TextStyle, FontFamily, Color, TextAlign.configure({ types: ['heading', 'paragraph'] })], content: value || '<p></p>', onUpdate: ({ editor: instance }) => onChange(instance.getHTML()) })
-  useEffect(() => { if (editor && value !== editor.getHTML() && value !== '') editor.commands.setContent(value) }, [editor, value])
-  if (!editor) return <div className="rich-editor-loading">{placeholder}</div>
-  const addImage = async (event: React.ChangeEvent<HTMLInputElement>) => { const file = event.target.files?.[0]; if (!file || !onImageUpload) return; const url = await onImageUpload(file); if (url) editor.chain().focus().setImage({ src: url }).run(); event.target.value = '' }
-  return <div className="rich-editor"><div className="rich-toolbar"><button type="button" onClick={() => editor.chain().focus().toggleBold().run()} className={editor.isActive('bold') ? 'active' : ''}>粗體</button><button type="button" onClick={() => editor.chain().focus().toggleItalic().run()} className={editor.isActive('italic') ? 'active' : ''}>斜體</button><select aria-label="字型" onChange={event => editor.chain().focus().setFontFamily(event.target.value).run()} defaultValue=""><option value="">字型</option><option value="俐方體11號">俐方體11號</option><option value="Microsoft JhengHei">微軟正黑</option><option value="serif">襯線字</option></select><select aria-label="文字大小" onChange={event => editor.chain().focus().setMark('textStyle', { fontSize: event.target.value }).run()} defaultValue=""><option value="">大小</option><option value="14px">小</option><option value="18px">中</option><option value="24px">大</option></select><input aria-label="文字顏色" type="color" onChange={event => editor.chain().focus().setColor(event.target.value).run()} /><label className="rich-image-button">圖片<input type="file" accept="image/png,image/jpeg,image/webp,image/gif" onChange={addImage} /></label></div><EditorContent editor={editor} className="rich-content" /></div>
+  const quillRef = useRef<ReactQuill>(null)
+  const imageHandler = async () => { if (!onImageUpload) return; const input = document.createElement('input'); input.type = 'file'; input.accept = 'image/png,image/jpeg,image/webp,image/gif'; input.click(); input.onchange = async () => { const file = input.files?.[0]; if (!file) return; const url = await onImageUpload(file); const quill = quillRef.current?.getEditor(); if (url && quill) { const index = quill.getSelection()?.index ?? quill.getLength(); quill.insertEmbed(index, 'image', url, 'user'); quill.setSelection(index + 1, 0, 'silent') } } }
+  const modules = { toolbar: { container: [['bold', 'italic', 'underline', 'strike'], [{ font: [] }, { size: ['small', false, 'large', 'huge'] }], [{ color: [] }, { background: [] }], [{ align: [] }], [{ list: 'ordered' }, { list: 'bullet' }], ['blockquote', 'link', 'image', 'clean']], handlers: { image: imageHandler } } }
+  return <div className="rich-editor"><ReactQuill ref={quillRef} theme="snow" value={value} onChange={onChange} placeholder={placeholder} modules={modules} /></div>
 }
 
 function logSupabaseError(operation: string, error: { message?: string; code?: string; details?: string; hint?: string } | null | undefined) {

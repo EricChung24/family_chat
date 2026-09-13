@@ -6,3 +6,4 @@
 .article-layout{position:relative}.article-actions{position:absolute;right:24px;top:-58px;z-index:2}.article-actions .button{padding:8px 12px}@media(max-width:700px){.article-actions{position:static;justify-content:flex-start;margin-bottom:10px}}
 .article-layout{overflow:visible}.article-content .article-actions{top:-58px;right:0}
 .article-body img,.comment-item img{display:block;max-width:100%;height:auto;object-fit:contain;border-radius:10px}
+.article-content,.article-body,.comment-item,.comment-item>div{min-width:0;max-width:100%;overflow-wrap:anywhere;word-break:break-word}.rich-editor,.ql-container,.ql-editor{max-width:100%}.ql-editor{overflow-wrap:anywhere;word-break:break-word}.ql-editor img{max-width:100%;height:auto}
