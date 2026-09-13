@@ -4,6 +4,7 @@ import test from 'node:test'
 
 const schema = await readFile(new URL('../supabase/schema.sql', import.meta.url), 'utf8')
 const app = await readFile(new URL('../src/App.tsx', import.meta.url), 'utf8')
+const css = await readFile(new URL('../src/App.css', import.meta.url), 'utf8')
 
 test('schema covers every family-owned table and enables RLS', () => {
   for (const table of ['families', 'profiles', 'threads', 'posts', 'itineraries', 'itinerary_items', 'albums', 'photos']) {
@@ -31,4 +32,8 @@ test('discussion cards and article authors render stored avatars', () => {
   assert.match(app, /<Avatar src=\{post\.authorAvatarUrl\}/)
   assert.match(app, /<Avatar src=\{currentAvatarUrl\} fallback=\{\(sessionName \|\| '你'\)\[0\]\}/)
   assert.match(app, /<Avatar src=\{item\.avatarUrl\} fallback=\{item\.author\[0\]\}/)
+})
+
+test('the interface uses WenDing ZhongLi as its primary font', () => {
+  assert.match(css, /font-family:\s*"文鼎中隸"/)
 })
