@@ -112,7 +112,7 @@ function ArticleDetailPage({ id, userId, sessionEmail, avatarUrl, notify, onBack
     const authorProfile = (profiles.data ?? []).find(profile => profile.id === result.data?.created_by)
     setAuthorBadge(authorProfile?.title_badge ?? '')
     setPost({ title: result.data.title, content: decodeRichHtml(first.content), authorId: result.data.created_by, createdAt: result.data.created_at, authorName: names.get(result.data.created_by) ?? '會員', authorAvatarUrl: authorProfile?.avatar_url })
-    setReplies(rows.slice(1).map(row => ({ ...row, content: decodeRichHtml(row.content), author: `${names.get(row.user_id) ?? '會員'}${badges.get(row.user_id) ? ` › ${badges.get(row.user_id)}` : ''}`, avatarUrl: (profiles.data ?? []).find(profile => profile.id === row.user_id)?.avatar_url })))
+    setReplies(rows.slice(1).map(row => ({ ...row, content: decodeRichHtml(row.content), author: `${names.get(row.user_id) ?? '會員'}${badges.get(row.user_id) ? ` - [ ${badges.get(row.user_id)} ]` : ''}`, avatarUrl: (profiles.data ?? []).find(profile => profile.id === row.user_id)?.avatar_url })))
     setTitle(result.data.title); setContent(first.content); setLoading(false)
   }
   useEffect(() => { setLiveUserId(userId); if (supabase) void supabase.auth.getUser().then(({ data }) => setLiveUserId(data.user?.id ?? null)); void load() }, [id, userId])
