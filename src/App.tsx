@@ -7,7 +7,7 @@ import type { User } from '@supabase/supabase-js'
 import { useRef } from 'react'
 import ReactQuill from 'react-quill-new'
 import 'react-quill-new/dist/quill.snow.css'
-import { Bell, CalendarDays, Home as HomeIcon, Images, MessageCircle, Search, Settings, UserRound } from 'lucide-react'
+import { CalendarDays, Home as HomeIcon, Images, MessageCircle, UserRound } from 'lucide-react'
 
 type Tab = 'home' | 'discussions' | 'trips' | 'albums'
 type Thread = { id?: string; title: string; body: string; author: string; authorId?: string; avatarUrl?: string | null; time: string; replies: number; tone: string; pinned?: boolean }
