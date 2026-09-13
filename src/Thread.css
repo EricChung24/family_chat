@@ -7,4 +7,5 @@
 .article-layout{overflow:visible}.article-content .article-actions{top:-58px;right:0}
 .article-body img,.comment-item img{display:block;max-width:100%;height:auto;object-fit:contain;border-radius:10px}
 .thread-rich-preview{margin:0;color:var(--muted);font-size:12px;line-height:1.5;overflow-wrap:anywhere}.thread-rich-preview p{margin:0}.thread-rich-preview img{display:block;max-width:100%;height:auto;max-height:180px;object-fit:contain;border-radius:8px}
+.empty-state:has(.thread-card) .thread-rich-preview{display:none}.empty-state:has(.thread-card) .thread-card{align-items:center;padding:14px 16px}.empty-state:has(.thread-card) .thread-body h3{margin:4px 0 0}.empty-state:has(.thread-card) .thread-footer{margin-top:4px}
 .article-content,.article-body,.comment-item,.comment-item>div{min-width:0;max-width:100%;overflow-wrap:anywhere;word-break:break-word}.rich-editor,.ql-container,.ql-editor{max-width:100%}.ql-editor{overflow-wrap:anywhere;word-break:break-word}.ql-editor img{max-width:100%;height:auto}
