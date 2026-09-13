@@ -110,20 +110,20 @@ function ArticleDetailPage({ id, userId, sessionEmail, avatarUrl, notify, onBack
     if (profiles.error) profiles = await supabase.from('profiles').select('id,display_name,avatar_url').in('id', profileIds)
     logSupabaseError('thread.detail.profiles', profiles.error)
     const names = new Map((profiles.data ?? []).map(profile => [profile.id, profile.display_name || '會員']))
-    const badges = new Map((profiles.data ?? []).map(profile => [profile.id, profile.title_badge || '']))
+    const badges = new Map((profiles.data ?? []).map(profile => [profile.id, profile.title_badge || '家庭成員']))
     const first = rows[0]
     if (!first) { setLoading(false); return }
     const postAuthorId = result.data.created_by
     const authorProfile = (profiles.data ?? []).find(profile => profile.id === postAuthorId)
-    setAuthorBadge(authorProfile?.title_badge ?? '')
+    setAuthorBadge(authorProfile?.title_badge || '家庭成員')
     const countResult = await supabase.from('posts').select('id', { count: 'exact', head: true }).eq('user_id', postAuthorId)
     setAuthorPostCount(countResult.count ?? 0)
     setPost({ title: result.data.title, content: decodeRichHtml(first.content), authorId: result.data.created_by, createdAt: result.data.created_at, authorName: names.get(result.data.created_by) ?? '會員', authorAvatarUrl: authorProfile?.avatar_url })
-    setReplies(rows.slice(1).map(row => ({ ...row, content: decodeRichHtml(row.content), author: `${names.get(row.user_id) ?? '會員'}${row.user_id === postAuthorId ? ' - [ 原Po ]' : badges.get(row.user_id) ? ` - [ ${badges.get(row.user_id)} ]` : ''}`, isOp: row.user_id === postAuthorId, avatarUrl: (profiles.data ?? []).find(profile => profile.id === row.user_id)?.avatar_url })))
+    setReplies(rows.slice(1).map(row => ({ ...row, content: decodeRichHtml(row.content), author: `${names.get(row.user_id) ?? '會員'}${row.user_id === postAuthorId ? ' - [ 原Po ]' : ` - [ ${badges.get(row.user_id) ?? '家庭成員'} ]`}`, isOp: row.user_id === postAuthorId, avatarUrl: (profiles.data ?? []).find(profile => profile.id === row.user_id)?.avatar_url })))
     setTitle(result.data.title); setContent(first.content); setLoading(false)
   }
   useEffect(() => { setLiveUserId(userId); if (supabase) void supabase.auth.getUser().then(({ data }) => setLiveUserId(data.user?.id ?? null)); void load() }, [id, userId])
-  useEffect(() => { const node = document.querySelector('.author-panel .muted:first-of-type'); if (node) node.textContent = authorBadge || '家庭會員' }, [authorBadge])
+  useEffect(() => { const node = document.querySelector('.author-panel .muted:first-of-type'); if (node) node.textContent = authorBadge || '家庭成員' }, [authorBadge])
   useEffect(() => { const node = document.querySelector('.author-panel .muted:last-of-type'); if (node) node.textContent = `發文數量：${authorPostCount}\n作者 ID：${post?.authorId.slice(0, 8) ?? ''}…` }, [authorPostCount, post?.authorId])
   const save = async () => {
     if (!supabase || !post || post.authorId !== liveUserId || !liveUserId || !title.trim() || !content.trim()) return
