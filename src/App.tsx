@@ -106,7 +106,8 @@ function ArticleDetailPage({ id, userId, sessionEmail, avatarUrl, notify, onBack
     if (result.error || !result.data) { setLoading(false); return }
     const rows = (result.data.posts ?? []) as Array<{ id: string; content: string; created_at: string; user_id: string }>
     const profileIds = [...new Set([result.data.created_by, ...rows.map(row => row.user_id)])]
-    const profiles = await supabase.from('profiles').select('id,display_name,avatar_url,title_badge').in('id', profileIds)
+    let profiles = await supabase.from('profiles').select('id,display_name,avatar_url,title_badge').in('id', profileIds)
+    if (profiles.error) profiles = await supabase.from('profiles').select('id,display_name,avatar_url').in('id', profileIds)
     logSupabaseError('thread.detail.profiles', profiles.error)
     const names = new Map((profiles.data ?? []).map(profile => [profile.id, profile.display_name || '會員']))
     const badges = new Map((profiles.data ?? []).map(profile => [profile.id, profile.title_badge || '']))
