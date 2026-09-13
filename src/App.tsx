@@ -89,7 +89,7 @@ function Home({ threads, setTab, compose, sessionName }: { threads: Thread[]; se
 function Discussions({ threads, compose, notify, onOpen }: { threads: Thread[]; compose: () => void; notify: (m: string) => void; onOpen: (id: string) => void }) { return <><Hero kicker="家庭留言板" title="一起聊聊" copy="問題、想法，以及值得記住的每件小事。" action={<button className="button primary" onClick={compose}>＋ 發起討論</button>} /><div className="filter-row"><button className="filter active">全部貼文</button><button className="filter">置頂</button><button className="filter">我的貼文</button><span /><button className="icon-button" onClick={() => notify('篩選功能已準備好')}>≡</button></div><div className="thread-list expanded">{threads.map((thread) => <ThreadCard key={thread.id ?? thread.title} thread={thread} onClick={() => thread.id && onOpen(thread.id)} />)}</div></> }
 // Legacy detail implementation retained in history; ArticleDetailPage is the active implementation.
 function ArticleDetailPage({ id, userId, sessionEmail, avatarUrl, notify, onBack, onDeleted }: { id: string; userId: string | null; sessionEmail: string | null; avatarUrl: string | null; notify: (m: string) => void; onBack: () => void; onDeleted: () => void }) {
-  type Reply = { id: string; content: string; created_at: string; user_id: string; author: string; isOp?: boolean; avatarUrl?: string | null }
+  type Reply = { id: string; content: string; created_at: string; user_id: string; parent_post_id?: string | null; author: string; isOp?: boolean; avatarUrl?: string | null }
   const [post, setPost] = useState<{ title: string; content: string; authorId: string; createdAt: string; authorName: string; authorAvatarUrl?: string | null } | null>(null)
   const [replies, setReplies] = useState<Reply[]>([])
   const [loading, setLoading] = useState(true)
@@ -97,15 +97,16 @@ function ArticleDetailPage({ id, userId, sessionEmail, avatarUrl, notify, onBack
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
   const [reply, setReply] = useState('')
+  const [replyingTo, setReplyingTo] = useState<string | null>(null)
   const [liveUserId, setLiveUserId] = useState<string | null>(userId)
   const [authorBadge, setAuthorBadge] = useState('')
   const [authorPostCount, setAuthorPostCount] = useState(0)
   const load = async () => {
     if (!supabase) { setLoading(false); return }
-    const result = await supabase.from('threads').select('id,title,created_at,created_by,posts(id,content,created_at,user_id)').eq('id', id).maybeSingle()
+    const result = await supabase.from('threads').select('id,title,created_at,created_by,posts(id,content,created_at,user_id,parent_post_id)').eq('id', id).maybeSingle()
     logSupabaseError('thread.detail', result.error)
     if (result.error || !result.data) { setLoading(false); return }
-    const rows = (result.data.posts ?? []) as Array<{ id: string; content: string; created_at: string; user_id: string }>
+    const rows = (result.data.posts ?? []) as Array<{ id: string; content: string; created_at: string; user_id: string; parent_post_id?: string | null }>
     const profileIds = [...new Set([result.data.created_by, ...rows.map(row => row.user_id)])]
     let profiles: { data: Array<{ id: string; display_name: string | null; avatar_url: string | null; title_badge?: string | null }> | null; error: { message?: string } | null } = await supabase.from('profiles').select('id,display_name,avatar_url,title_badge').in('id', profileIds)
     if (profiles.error) profiles = await supabase.from('profiles').select('id,display_name,avatar_url').in('id', profileIds)
@@ -145,10 +146,10 @@ function ArticleDetailPage({ id, userId, sessionEmail, avatarUrl, notify, onBack
   }
   const addReply = async () => {
     if (!supabase || !liveUserId || !reply.trim()) { notify('登入後才能留言'); return }
-    const result = await supabase.from('posts').insert({ thread_id: id, user_id: liveUserId, content: reply.trim() }).select('id,content,created_at,user_id').single()
+    const result = await supabase.from('posts').insert({ thread_id: id, user_id: liveUserId, content: reply.trim(), ...(replyingTo ? { parent_post_id: replyingTo } : {}) }).select('id,content,created_at,user_id,parent_post_id').single()
     logSupabaseError('post.reply', result.error)
     if (result.error || !result.data) { notify(result.error?.message ?? '留言失敗'); return }
-        setReplies(current => [...current, { ...result.data, author: '我', avatarUrl }]); setReply(''); notify('留言已發布')
+        setReplies(current => [...current, { ...result.data, author: '我', avatarUrl }]); setReply(''); setReplyingTo(null); notify(replyingTo ? '回覆已發布' : '留言已發布')
   }
   const uploadReplyImage = async (file: File) => { if (!supabase || !liveUserId) { notify('請先登入才能上傳圖片'); return null } if (!file.type.startsWith('image/') || file.size > 50 * 1024 * 1024) { notify('請選擇 50MB 以下的圖片'); return null } const { data: profile } = await supabase.from('profiles').select('family_id').eq('id', liveUserId).maybeSingle(); if (!profile?.family_id) { notify('會員資料尚未同步'); return null } const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '') || 'image.jpg'; const path = `${profile.family_id}/posts/${liveUserId}/reply-${Date.now()}-${safeName}`; const uploaded = await supabase.storage.from('family-photos').upload(path, file, { contentType: file.type }); if (uploaded.error) { notify(`圖片上傳失敗：${uploaded.error.message}`); return null } const signed = await supabase.storage.from('family-photos').createSignedUrl(path, 60 * 60 * 24 * 365); return signed.data?.signedUrl ?? null }
   if (loading) return <div className="empty-state"><p>文章載入中…</p></div>
