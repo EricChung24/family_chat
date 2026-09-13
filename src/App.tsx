@@ -109,10 +109,11 @@ function ArticleDetailPage({ id, userId, sessionEmail, avatarUrl, notify, onBack
     const badges = new Map((profiles.data ?? []).map(profile => [profile.id, profile.title_badge || '']))
     const first = rows[0]
     if (!first) { setLoading(false); return }
-    const authorProfile = (profiles.data ?? []).find(profile => profile.id === result.data?.created_by)
+    const postAuthorId = result.data.created_by
+    const authorProfile = (profiles.data ?? []).find(profile => profile.id === postAuthorId)
     setAuthorBadge(authorProfile?.title_badge ?? '')
     setPost({ title: result.data.title, content: decodeRichHtml(first.content), authorId: result.data.created_by, createdAt: result.data.created_at, authorName: names.get(result.data.created_by) ?? '會員', authorAvatarUrl: authorProfile?.avatar_url })
-    setReplies(rows.slice(1).map(row => ({ ...row, content: decodeRichHtml(row.content), author: `${names.get(row.user_id) ?? '會員'}${row.user_id === result.data.created_by ? ' - [ 原Po ]' : badges.get(row.user_id) ? ` - [ ${badges.get(row.user_id)} ]` : ''}`, isOp: row.user_id === result.data.created_by, avatarUrl: (profiles.data ?? []).find(profile => profile.id === row.user_id)?.avatar_url })))
+    setReplies(rows.slice(1).map(row => ({ ...row, content: decodeRichHtml(row.content), author: `${names.get(row.user_id) ?? '會員'}${row.user_id === postAuthorId ? ' - [ 原Po ]' : badges.get(row.user_id) ? ` - [ ${badges.get(row.user_id)} ]` : ''}`, isOp: row.user_id === postAuthorId, avatarUrl: (profiles.data ?? []).find(profile => profile.id === row.user_id)?.avatar_url })))
     setTitle(result.data.title); setContent(first.content); setLoading(false)
   }
   useEffect(() => { setLiveUserId(userId); if (supabase) void supabase.auth.getUser().then(({ data }) => setLiveUserId(data.user?.id ?? null)); void load() }, [id, userId])
