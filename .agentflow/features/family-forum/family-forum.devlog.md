@@ -296,3 +296,6 @@ Repository-wide scan found the remaining fabricated profile constants in `src/li
 
 ## [RUN-035] Event (during round A-005)
 Keep-going checkpoint: T-4 is now proven for discussions, profile, itinerary, and album Supabase CRUD; T-5 is proven for responsive, empty/error states, deployment guidance, and the complete local suite. Tracker advanced to T-6. The only remaining owner-only gate is exact Result Go for the implementation commit.
+
+## [RUN-036] Event (during round A-005)
+Checkpoint recorded before quota exhaustion. Recent commits: `113dacd` fixed live profile-title rendering and local synchronization; `1e36a4c` hid empty replies and corrected reply counts; `7ae2af1` made album text fields edit-only; `46623ce` added photo location/description fields; `706da51` added metadata form before photo upload; `44cdc04` removed text boxes from photo preview; `1ec0c7d` refreshed navigation icons; `48190e8` added `posts.parent_post_id` migration for threaded replies; `cf770cd`/`1ec0c7d` refreshed Lucide/Trending icons. Local typecheck passes. Live Vercel site responds 200, but serves stale assets and is connected to `github/EricChung1024` while code is pushed to `github/EricChung24/family_chat`; deployment linkage must be corrected. Existing security test suite is 5/6 because one assertion still expects legacy `圖片留言` wording.
