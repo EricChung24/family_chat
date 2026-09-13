@@ -86,7 +86,7 @@ create policy "members manage itinerary items" on public.itinerary_items for all
 create policy "members manage family albums" on public.albums for all to authenticated using (family_id = public.my_family_id()) with check (family_id = public.my_family_id());
 create policy "members manage album photos" on public.photos for all to authenticated using (exists (select 1 from public.albums a where a.id = album_id and a.family_id = public.my_family_id())) with check (uploaded_by = auth.uid() and exists (select 1 from public.albums a where a.id = album_id and a.family_id = public.my_family_id()));
 
-insert into storage.buckets (id, name, public) values ('family-photos', 'family-photos', false) on conflict (id) do nothing;
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types) values ('family-photos', 'family-photos', false, 52428800, array['image/jpeg', 'image/png', 'image/webp', 'image/gif']) on conflict (id) do update set public = false, file_size_limit = 52428800, allowed_mime_types = excluded.allowed_mime_types;
 create policy "family members read photos" on storage.objects for select to authenticated using (bucket_id = 'family-photos' and (storage.foldername(name))[1] = public.my_family_id()::text);
 create policy "family members upload photos" on storage.objects for insert to authenticated with check (bucket_id = 'family-photos' and (storage.foldername(name))[1] = public.my_family_id()::text);
 create policy "family members delete own photos" on storage.objects for delete to authenticated using (bucket_id = 'family-photos' and owner_id = auth.uid()::text);
