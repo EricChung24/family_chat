@@ -3,6 +3,7 @@ import { readFile } from 'node:fs/promises'
 import test from 'node:test'
 
 const schema = await readFile(new URL('../supabase/schema.sql', import.meta.url), 'utf8')
+const app = await readFile(new URL('../src/App.tsx', import.meta.url), 'utf8')
 
 test('schema covers every family-owned table and enables RLS', () => {
   for (const table of ['families', 'profiles', 'threads', 'posts', 'itineraries', 'itinerary_items', 'albums', 'photos']) {
@@ -17,4 +18,9 @@ test('policies derive access from the authenticated family scope', () => {
   assert.match(schema, /family members upload photos/)
   assert.match(schema, /bootstrap_family/)
   assert.doesNotMatch(schema, /service-role/i)
+})
+
+test('avatar uploads use the family id as the first storage folder', () => {
+  assert.match(app, /select\('avatar_url,family_id'\)/)
+  assert.match(app, /`\$\{profileFamilyId\}\/\$\{userId\}\/avatar-/)
 })
