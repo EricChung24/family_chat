@@ -86,7 +86,7 @@ function Home({ threads, setTab, compose, sessionName }: { threads: Thread[]; se
 function Discussions({ threads, compose, notify, onOpen }: { threads: Thread[]; compose: () => void; notify: (m: string) => void; onOpen: (id: string) => void }) { return <><Hero kicker="家庭留言板" title="一起聊聊" copy="問題、想法，以及值得記住的每件小事。" action={<button className="button primary" onClick={compose}>＋ 發起討論</button>} /><div className="filter-row"><button className="filter active">全部貼文</button><button className="filter">置頂</button><button className="filter">我的貼文</button><span /><button className="icon-button" onClick={() => notify('篩選功能已準備好')}>≡</button></div><div className="thread-list expanded">{threads.map((thread) => <ThreadCard key={thread.id ?? thread.title} thread={thread} onClick={() => thread.id && onOpen(thread.id)} />)}</div></> }
 // Legacy detail implementation retained in history; ArticleDetailPage is the active implementation.
 function ArticleDetailPage({ id, userId, sessionEmail, avatarUrl, notify, onBack, onDeleted }: { id: string; userId: string | null; sessionEmail: string | null; avatarUrl: string | null; notify: (m: string) => void; onBack: () => void; onDeleted: () => void }) {
-  type Reply = { id: string; content: string; created_at: string; user_id: string; author: string; avatarUrl?: string | null }
+  type Reply = { id: string; content: string; created_at: string; user_id: string; author: string; isOp?: boolean; avatarUrl?: string | null }
   const [post, setPost] = useState<{ title: string; content: string; authorId: string; createdAt: string; authorName: string; authorAvatarUrl?: string | null } | null>(null)
   const [replies, setReplies] = useState<Reply[]>([])
   const [loading, setLoading] = useState(true)
@@ -112,7 +112,7 @@ function ArticleDetailPage({ id, userId, sessionEmail, avatarUrl, notify, onBack
     const authorProfile = (profiles.data ?? []).find(profile => profile.id === result.data?.created_by)
     setAuthorBadge(authorProfile?.title_badge ?? '')
     setPost({ title: result.data.title, content: decodeRichHtml(first.content), authorId: result.data.created_by, createdAt: result.data.created_at, authorName: names.get(result.data.created_by) ?? '會員', authorAvatarUrl: authorProfile?.avatar_url })
-    setReplies(rows.slice(1).map(row => ({ ...row, content: decodeRichHtml(row.content), author: `${names.get(row.user_id) ?? '會員'}${badges.get(row.user_id) ? ` - [ ${badges.get(row.user_id)} ]` : ''}`, avatarUrl: (profiles.data ?? []).find(profile => profile.id === row.user_id)?.avatar_url })))
+    setReplies(rows.slice(1).map(row => ({ ...row, content: decodeRichHtml(row.content), author: `${names.get(row.user_id) ?? '會員'}${row.user_id === result.data.created_by ? ' - [ 原Po ]' : badges.get(row.user_id) ? ` - [ ${badges.get(row.user_id)} ]` : ''}`, isOp: row.user_id === result.data.created_by, avatarUrl: (profiles.data ?? []).find(profile => profile.id === row.user_id)?.avatar_url })))
     setTitle(result.data.title); setContent(first.content); setLoading(false)
   }
   useEffect(() => { setLiveUserId(userId); if (supabase) void supabase.auth.getUser().then(({ data }) => setLiveUserId(data.user?.id ?? null)); void load() }, [id, userId])

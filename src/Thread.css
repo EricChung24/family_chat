@@ -16,3 +16,4 @@
 .article-content::before{background-image:none;background:#1118164d}
 .article-content{background:#111b17c9;border-color:#c4d3c755}.article-content::before{background:#0b151166}.article-content h1,.article-content .muted,.article-content .article-body{color:#f4f0e8;text-shadow:0 1px 2px #0008}.comment-stack{background:#111b17b8;border-radius:14px;padding:18px}.comment-item{border-color:#c4d3c733}
 .article-content .article-actions{position:static;display:flex;justify-content:flex-end;gap:8px;margin-bottom:16px}.article-content .article-actions .button{position:relative;top:auto;right:auto}
+.comment-item b{color:#65b8ff}.comment-item div>div{color:#f4f0e8}
