@@ -21,6 +21,6 @@ test('policies derive access from the authenticated family scope', () => {
 })
 
 test('avatar uploads use the family id as the first storage folder', () => {
-  assert.match(app, /select\('avatar_url,family_id'\)/)
+  assert.match(app, /const profile = await supabase\.from\('profiles'\)\.select\('family_id'\)/)
   assert.match(app, /`\$\{profileFamilyId\}\/\$\{userId\}\/avatar-/)
 })
