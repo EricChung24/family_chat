@@ -11,7 +11,16 @@ html{font-size:16px}body{font-family:"俐方體11號","Noto Sans TC","Microsoft 
  .avatar-image{overflow:hidden}.avatar-image img{width:100%;height:100%;object-fit:cover}.avatar-upload{display:inline-flex;position:relative;margin-top:12px}.avatar-upload input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer}
 /* Vercel deployment marker: avatar upload release */
 
-/* 全站使用文鼎中隸；未安裝字型的裝置使用相近的隸書 fallback。 */
-body, body * { font-family: "文鼎中隸", "文鼎隸書 M", "AR LiShuB5 Medium", "DFKai-SB", serif !important; }
+/* 全站使用俐方體11號；未載入時使用相近的繁中字體 fallback。 */
+body, body * { font-family: "俐方體11號", "Noto Sans TC", "Microsoft JhengHei", sans-serif !important; }
 
-@font-face { font-family: "文鼎中隸"; src: url("/fonts/文鼎中隸.ttf") format("truetype"); font-display: swap; font-weight: 100 900; }
+/* Compact UI rhythm: denser desktop layout while preserving touch-friendly controls. */
+.rail{width:224px;padding:22px 16px 16px}.family-switcher{margin:34px 0 20px}
+.topbar{height:72px;padding:0 clamp(20px,4vw,56px)}
+.content-wrap{max-width:1100px;padding:42px clamp(20px,4vw,56px) 72px}
+.hero-row{margin-bottom:28px;gap:18px}.section-heading{margin:44px 0 14px}
+.feature-card{min-height:220px;padding:22px}.feature-grid{gap:12px}
+.thread-list{gap:8px}.thread-card{gap:14px;padding:15px 16px}
+.profile-grid{margin-top:18px;gap:12px}.setting-card{padding:20px}
+.article-content{padding:24px 28px;min-height:220px}.author-panel{padding:22px 18px}.comment-stack{padding-top:14px}
+.album-grid{gap:12px}

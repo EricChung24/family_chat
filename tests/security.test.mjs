@@ -34,7 +34,6 @@ test('discussion cards and article authors render stored avatars', () => {
   assert.match(app, /<Avatar src=\{item\.avatarUrl\} fallback=\{item\.author\[0\]\}/)
 })
 
-test('the interface uses WenDing ZhongLi as its primary font', () => {
-  assert.match(css, /font-family:\s*"文鼎中隸"/)
-  assert.match(css, /url\("\/fonts\/文鼎中隸\.ttf"\)/)
+test('the interface uses Cubic 11 as its primary font', () => {
+  assert.match(css, /font-family:\s*"俐方體11號"/)
 })
