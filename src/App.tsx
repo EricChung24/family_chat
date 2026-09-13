@@ -56,6 +56,8 @@ function App() {
   useEffect(() => { if (!supabase || !sessionEmail) return; const client = supabase; client.from('threads').select('id,title,created_at,pinned,created_by,posts(content,created_at)').order('created_at', { ascending: false }).then(async ({ data, error }) => { if (error || !data) return; const ids = [...new Set(data.map(row => row.created_by).filter(Boolean))] as string[]; const profiles = ids.length ? await client.from('profiles').select('id,display_name,avatar_url').in('id', ids) : { data: [] }; const profileMap = new Map((profiles.data ?? []).map(profile => [profile.id, { displayName: profile.display_name || '會員', avatarUrl: profile.avatar_url }])); setThreads(setThreadsFromDatabase(data as Array<{ id: string; title: string; created_at: string; pinned: boolean; created_by?: string; posts?: Array<{ content: string }> }>, profileMap)) }) }, [sessionEmail])
   const notify = (message: string) => { setToast(message); window.setTimeout(() => setToast(''), 2400) }
   useEffect(() => { if (!authOpen) return; const submitOnEnter = (event: KeyboardEvent) => { if (event.key === 'Enter' && !authBusy) { event.preventDefault(); void submitAuth() } }; document.addEventListener('keydown', submitOnEnter); return () => document.removeEventListener('keydown', submitOnEnter) }, [authOpen, authBusy, email, password, displayName, authMode])
+  useEffect(() => { const navClick = (event: MouseEvent) => { const button = (event.target as HTMLElement).closest('.nav-button'); if (button && /討論|交流/.test(button.textContent ?? '')) { history.pushState({}, '', '/'); setDetailId(null) } }; document.addEventListener('click', navClick); return () => document.removeEventListener('click', navClick) }, [])
+  useEffect(() => { const toggleRail = (event: KeyboardEvent) => { if (event.ctrlKey && event.key.toLowerCase() === 'b') { event.preventDefault(); document.documentElement.classList.toggle('rail-collapsed') } }; document.addEventListener('keydown', toggleRail); return () => document.removeEventListener('keydown', toggleRail) }, [])
   const submitAuth = async () => { if (!supabase || !email.trim() || !password) return; setAuthBusy(true); const result = authMode === 'login' ? await supabase.auth.signInWithPassword({ email: email.trim(), password }) : await supabase.auth.signUp({ email: email.trim(), password, options: { data: { display_name: displayName.trim(), }, emailRedirectTo: window.location.origin } }); if (result.error) { notify(result.error.message); setAuthBusy(false); return } if (!result.data.user || !result.data.session) { if (authMode === 'signup') { notify('註冊成功，請先到信箱完成驗證，再回來登入'); setAuthMode('login') } else notify('登入未建立工作階段，請重新嘗試'); setAuthBusy(false); return } const memberName = authMode === 'signup' ? displayName.trim() : email.trim().split('@')[0]; const bootstrap = await supabase.rpc('bootstrap_family', { p_display_name: memberName }); if (bootstrap.error) { notify(`會員資料同步失敗：${bootstrap.error.message}`); setAuthBusy(false); return } notify(authMode === 'login' ? '登入成功' : '註冊成功'); setSessionEmail(result.data.user.email ?? email.trim()); setSessionUserId(result.data.user.id); setSessionName(memberName); setAuthOpen(false); setCompose(false); setProfilePanel(false); setTab('home'); setAuthBusy(false) }
   const signOut = async () => { if (supabase) await supabase.auth.signOut(); setSessionEmail(null); setSessionUserId(null); setSessionName(''); setThreads([]); setProfilePanel(false); setTab('home'); notify('已登出') }
   const openComposer = async () => { if (!supabase) { notify('尚未連接 Supabase，暫時無法建立內容'); return } const { data, error } = await supabase.auth.getSession(); logSupabaseError('auth.getSession.composer', error); if (!data.session?.user?.id) { setSessionEmail(null); setSessionName(''); setAuthOpen(true); return } setSessionEmail(data.session.user.email ?? null); setCompose(true) }
@@ -96,6 +98,7 @@ function ArticleDetailPage({ id, userId, sessionEmail, avatarUrl, notify, onBack
   const [reply, setReply] = useState('')
   const [liveUserId, setLiveUserId] = useState<string | null>(userId)
   const [authorBadge, setAuthorBadge] = useState('')
+  const [authorPostCount, setAuthorPostCount] = useState(0)
   const load = async () => {
     if (!supabase) { setLoading(false); return }
     const result = await supabase.from('threads').select('id,title,created_at,created_by,posts(id,content,created_at,user_id)').eq('id', id).maybeSingle()
@@ -112,12 +115,15 @@ function ArticleDetailPage({ id, userId, sessionEmail, avatarUrl, notify, onBack
     const postAuthorId = result.data.created_by
     const authorProfile = (profiles.data ?? []).find(profile => profile.id === postAuthorId)
     setAuthorBadge(authorProfile?.title_badge ?? '')
+    const countResult = await supabase.from('posts').select('id', { count: 'exact', head: true }).eq('user_id', postAuthorId)
+    setAuthorPostCount(countResult.count ?? 0)
     setPost({ title: result.data.title, content: decodeRichHtml(first.content), authorId: result.data.created_by, createdAt: result.data.created_at, authorName: names.get(result.data.created_by) ?? '會員', authorAvatarUrl: authorProfile?.avatar_url })
     setReplies(rows.slice(1).map(row => ({ ...row, content: decodeRichHtml(row.content), author: `${names.get(row.user_id) ?? '會員'}${row.user_id === postAuthorId ? ' - [ 原Po ]' : badges.get(row.user_id) ? ` - [ ${badges.get(row.user_id)} ]` : ''}`, isOp: row.user_id === postAuthorId, avatarUrl: (profiles.data ?? []).find(profile => profile.id === row.user_id)?.avatar_url })))
     setTitle(result.data.title); setContent(first.content); setLoading(false)
   }
   useEffect(() => { setLiveUserId(userId); if (supabase) void supabase.auth.getUser().then(({ data }) => setLiveUserId(data.user?.id ?? null)); void load() }, [id, userId])
   useEffect(() => { const node = document.querySelector('.author-panel .muted:first-of-type'); if (node) node.textContent = authorBadge || '家庭會員' }, [authorBadge])
+  useEffect(() => { const node = document.querySelector('.author-panel .muted:last-of-type'); if (node) node.textContent = `發文數量：${authorPostCount}\n作者 ID：${post?.authorId.slice(0, 8) ?? ''}…` }, [authorPostCount, post?.authorId])
   const save = async () => {
     if (!supabase || !post || post.authorId !== liveUserId || !liveUserId || !title.trim() || !content.trim()) return
     const threadUpdate = await supabase.from('threads').update({ title: title.trim() }).eq('id', id).eq('created_by', liveUserId)
