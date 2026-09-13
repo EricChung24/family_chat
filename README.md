@@ -1,5 +1,7 @@
 # Family Chat
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
+
 ![English demo](./demo-en.png)
 
 > A private, shared family space for discussions, memories, albums, and trips.
@@ -59,4 +61,5 @@ Connect the repository to Vercel, select `master` as the production branch, conf
 
 ## License
 
-Private family project. Add a license before redistributing.
+This project is open source under the [MIT License](./LICENSE). You may use,
+modify, and redistribute it subject to the license terms.

@@ -1,5 +1,7 @@
 # 吾黨所鍾 Family Chat
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
+
 ![繁體中文示意圖](./demo-zh-TW.png)
 
 > 給家人使用的私人共享空間：討論、回憶、相簿與行程集中管理。
@@ -59,4 +61,4 @@ npm test
 
 ## 授權
 
-私人家庭專案。若要公開散布，請先補上正式授權條款。
+本專案以 [MIT License](./LICENSE) 開源。你可以依授權條款自由使用、修改與重新散布本專案。
