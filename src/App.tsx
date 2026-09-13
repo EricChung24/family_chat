@@ -12,7 +12,7 @@ import { CalendarDays, Home as HomeIcon, Images, MessageCircle, UserRound } from
 type Tab = 'home' | 'discussions' | 'trips' | 'albums'
 type Thread = { id?: string; title: string; body: string; author: string; authorId?: string; avatarUrl?: string | null; time: string; replies: number; tone: string; pinned?: boolean }
 type ProfileInfo = { displayName: string; avatarUrl?: string | null }
-const decodeRichHtml = (value: string) => value.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&amp;/g, '&')
+const decodeRichHtml = (value: string) => { let decoded = value; for (let pass = 0; pass < 3; pass += 1) decoded = decoded.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&amp;/g, '&'); return decoded }
 
 function RichTextEditor({ value, onChange, onImageUpload, placeholder }: { value: string; onChange: (html: string) => void; onImageUpload?: (file: File) => Promise<string | null>; placeholder: string }) {
   const quillRef = useRef<ReactQuill>(null)
