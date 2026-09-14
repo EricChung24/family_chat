@@ -2001,7 +2001,7 @@ function Albums({
           .from("photos")
           .select("storage_path")
           .eq("album_id", album.id)
-          .order("created_at")
+          .order("created_at", { ascending: false })
           .limit(1)
           .maybeSingle();
         if (!first.data?.storage_path) return album;
@@ -2551,7 +2551,16 @@ function Albums({
               key={item.id}
               onClick={() => openAlbum(item)}
             >
-              <div className="album-art tile-0">
+              <div
+                className={`album-art tile-0 ${item.coverUrl ? "has-cover" : ""}`}
+                style={
+                  item.coverUrl
+                    ? {
+                        backgroundImage: `linear-gradient(180deg, #0b141133 25%, #0b1411cc 100%), url("${item.coverUrl}")`,
+                      }
+                    : undefined
+                }
+              >
                 <span>吾黨所鍾</span>
               </div>
               <div className="album-caption">

@@ -685,6 +685,10 @@ button {
   min-height: 180px;
   position: relative;
 }
+.album-art.has-cover {
+  background-position: center;
+  background-size: cover;
+}
 .album-art span {
   position: absolute;
   left: 14px;
