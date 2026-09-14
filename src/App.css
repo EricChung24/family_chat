@@ -1729,14 +1729,12 @@ textarea {
   transform: rotate(-8deg);
 }
 .section-heading .text-button::after {
-  content: "\f1b4";
-  font-family: uicons-regular-rounded;
+  content: none;
   font-size: 15px;
   vertical-align: -1px;
 }
 .album-caption .text-button::before {
-  content: "\f54f";
-  font-family: uicons-regular-rounded;
+  content: none;
   color: var(--coral);
 }
 .button.primary {
@@ -2078,4 +2076,217 @@ label.button:has(.ui-icon) {
 .uicons-credit:focus-visible {
   color: var(--ink);
   opacity: 1;
+}
+.mobile-account-copy {
+  display: none;
+}
+
+/* iPhone 11 (414px), iPhone 12 (390px), iPhone 16 (393px). */
+@media (max-width: 430px) {
+  html,
+  body,
+  #root,
+  .app-shell {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: clip;
+  }
+  body {
+    background-attachment: scroll;
+  }
+  .topbar {
+    height: calc(62px + env(safe-area-inset-top));
+    padding: env(safe-area-inset-top) 16px 0;
+  }
+  .top-actions {
+    gap: 4px;
+  }
+  .top-actions .account-button {
+    min-height: 40px;
+    padding-inline: 11px;
+  }
+  .profile-account-button {
+    display: none;
+  }
+  .mobile-account-copy {
+    display: inline;
+  }
+  .desktop-account-copy {
+    display: none;
+  }
+  .content-wrap {
+    width: 100%;
+    padding: 30px 16px calc(92px + env(safe-area-inset-bottom));
+  }
+  .hero-row {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    gap: 18px;
+    margin-bottom: 26px;
+    padding: 34px 20px;
+  }
+  .hero-row > div,
+  .hero-row .button {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+  .hero-row h1,
+  .profile-hero h1 {
+    font-size: clamp(34px, 9.5vw, 40px);
+    overflow-wrap: anywhere;
+  }
+  .hero-copy {
+    font-size: 15px;
+  }
+  .button,
+  .text-button,
+  .icon-button,
+  .nav-button,
+  .close-button,
+  .mobile-avatar {
+    min-height: 44px;
+  }
+  .button {
+    padding: 11px 14px;
+  }
+  .section-heading {
+    width: 100%;
+    min-width: 0;
+    align-items: center;
+    gap: 12px;
+    margin-top: 38px;
+  }
+  .section-heading > div {
+    min-width: 0;
+  }
+  .section-heading .text-button {
+    flex: 0 0 auto;
+    max-width: 104px;
+    white-space: nowrap;
+  }
+  .section-heading h2 {
+    font-size: 24px;
+  }
+  .section-heading h2::before {
+    width: 21px;
+    height: 21px;
+    margin-right: 7px;
+  }
+  .feature-card {
+    min-height: 230px;
+    padding: 22px;
+  }
+  .thread-card,
+  .empty-state:has(.thread-card) .thread-card {
+    width: 100%;
+    min-width: 0;
+  }
+  .thread-list.expanded .thread-card,
+  .empty-state:has(.thread-card) .thread-card {
+    display: grid;
+    grid-template-columns: 38px minmax(0, 1fr);
+    gap: 12px;
+  }
+  .empty-state:has(.thread-card) .thread-meta,
+  .empty-state:has(.thread-card) .thread-body h3,
+  .empty-state:has(.thread-card) .thread-footer {
+    grid-column: 2;
+    grid-row: auto;
+    white-space: normal;
+  }
+  .mobile-nav {
+    height: calc(66px + env(safe-area-inset-bottom));
+    padding: 5px 6px env(safe-area-inset-bottom);
+  }
+  .mobile-nav .nav-button {
+    min-width: 64px;
+    padding: 4px 10px;
+  }
+  .composer-modal,
+  .quick-panel {
+    width: 100%;
+    max-height: calc(100dvh - env(safe-area-inset-top) - 12px);
+    padding: 24px 18px calc(20px + env(safe-area-inset-bottom));
+    border-radius: 18px 18px 0 0;
+  }
+  .modal-backdrop {
+    align-items: end;
+    padding: env(safe-area-inset-top) 0 0;
+  }
+  .modal-actions {
+    position: sticky;
+    bottom: 0;
+    padding-top: 10px;
+    background: inherit;
+  }
+  .album-grid,
+  .photo-detail-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .album-detail-head {
+    align-items: stretch;
+    gap: 12px;
+  }
+  .album-detail-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+  .album-detail-actions .button,
+  .album-detail-actions label.button {
+    width: 100%;
+    white-space: normal;
+  }
+  .album-detail-actions .danger-button {
+    grid-column: 1 / -1;
+  }
+  .profile-hero {
+    align-items: flex-start;
+    gap: 14px;
+  }
+  .title-editor-row {
+    grid-template-columns: minmax(0, 1fr) 52px;
+  }
+  input,
+  textarea,
+  select {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 393px) {
+  .content-wrap {
+    padding-inline: 14px;
+  }
+  .topbar {
+    padding-inline: 14px;
+  }
+  .mobile-brand b {
+    max-width: 88px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .top-actions .account-button {
+    font-size: 11px;
+    padding-inline: 9px;
+  }
+  .photo-detail-card label {
+    padding: 8px;
+  }
+  .comment-stack {
+    padding-inline: 12px;
+  }
+}
+
+@media (min-width: 394px) and (max-width: 430px) {
+  .content-wrap {
+    padding-inline: 18px;
+  }
+  .album-grid,
+  .photo-detail-grid {
+    gap: 10px;
+  }
 }
