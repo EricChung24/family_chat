@@ -4,6 +4,7 @@ create table if not exists public.families (id uuid primary key default gen_rand
 create table if not exists public.profiles (id uuid primary key references auth.users(id) on delete cascade, family_id uuid not null references public.families(id) on delete restrict, display_name text not null, avatar_url text, role text not null default 'member' check (role in ('member','admin')), created_at timestamptz not null default now());
 create table if not exists public.threads (id uuid primary key default gen_random_uuid(), family_id uuid not null references public.families(id) on delete cascade, title text not null, created_by uuid not null references public.profiles(id), created_at timestamptz not null default now(), pinned boolean not null default false);
 create table if not exists public.posts (id uuid primary key default gen_random_uuid(), thread_id uuid not null references public.threads(id) on delete cascade, user_id uuid not null references public.profiles(id), parent_post_id uuid references public.posts(id) on delete cascade, content text not null, image_url text, created_at timestamptz not null default now());
+create table if not exists public.notifications (id uuid primary key default gen_random_uuid(), recipient_id uuid not null references public.profiles(id) on delete cascade, actor_id uuid not null references public.profiles(id) on delete cascade, thread_id uuid not null references public.threads(id) on delete cascade, post_id uuid not null references public.posts(id) on delete cascade, type text not null default 'reply', read_at timestamptz, created_at timestamptz not null default now());
 create table if not exists public.itineraries (id uuid primary key default gen_random_uuid(), family_id uuid not null references public.families(id) on delete cascade, title text not null, start_date date not null, end_date date not null, created_by uuid not null references public.profiles(id), created_at timestamptz not null default now());
 create table if not exists public.itinerary_items (id uuid primary key default gen_random_uuid(), itinerary_id uuid not null references public.itineraries(id) on delete cascade, day_index integer not null check (day_index > 0), start_time time, title text not null, note text, location text, order_index integer not null default 0);
 create table if not exists public.albums (id uuid primary key default gen_random_uuid(), family_id uuid not null references public.families(id) on delete cascade, title text not null, description text not null default '', created_at timestamptz not null default now());
@@ -17,6 +18,7 @@ alter table public.photos add column if not exists location text not null defaul
 create index if not exists profiles_family_id_idx on public.profiles(family_id);
 create index if not exists threads_family_id_created_at_idx on public.threads(family_id, created_at desc);
 create index if not exists posts_thread_id_created_at_idx on public.posts(thread_id, created_at);
+create index if not exists notifications_recipient_unread_idx on public.notifications(recipient_id, read_at, created_at desc);
 create index if not exists itineraries_family_id_idx on public.itineraries(family_id);
 create index if not exists albums_family_id_idx on public.albums(family_id);
 
@@ -48,6 +50,7 @@ alter table public.families enable row level security;
 alter table public.profiles enable row level security;
 alter table public.threads enable row level security;
 alter table public.posts enable row level security;
+alter table public.notifications enable row level security;
 alter table public.itineraries enable row level security;
 alter table public.itinerary_items enable row level security;
 alter table public.albums enable row level security;
@@ -66,6 +69,9 @@ drop policy if exists "members read family posts" on public.posts;
 drop policy if exists "members create family posts" on public.posts;
 drop policy if exists "authors update own posts" on public.posts;
 drop policy if exists "authors delete own posts" on public.posts;
+drop policy if exists "members read own notifications" on public.notifications;
+drop policy if exists "members create reply notifications" on public.notifications;
+drop policy if exists "members update own notifications" on public.notifications;
 drop policy if exists "members manage family itineraries" on public.itineraries;
 drop policy if exists "members manage itinerary items" on public.itinerary_items;
 drop policy if exists "members manage family albums" on public.albums;
@@ -85,6 +91,9 @@ create policy "members read family posts" on public.posts for select to authenti
 create policy "members create family posts" on public.posts for insert to authenticated with check (user_id = auth.uid() and exists (select 1 from public.threads t where t.id = thread_id and t.family_id = public.my_family_id()));
 create policy "authors update own posts" on public.posts for update to authenticated using (user_id = auth.uid()) with check (user_id = auth.uid());
 create policy "authors delete own posts" on public.posts for delete to authenticated using (user_id = auth.uid());
+create policy "members read own notifications" on public.notifications for select to authenticated using (recipient_id = auth.uid());
+create policy "members create reply notifications" on public.notifications for insert to authenticated with check (actor_id = auth.uid() and exists (select 1 from public.profiles recipient where recipient.id = recipient_id and recipient.family_id = public.my_family_id()) and exists (select 1 from public.threads t where t.id = thread_id and t.family_id = public.my_family_id()));
+create policy "members update own notifications" on public.notifications for update to authenticated using (recipient_id = auth.uid()) with check (recipient_id = auth.uid());
 create policy "members manage family itineraries" on public.itineraries for all to authenticated using (family_id = public.my_family_id()) with check (family_id = public.my_family_id() and created_by = auth.uid());
 create policy "members manage itinerary items" on public.itinerary_items for all to authenticated using (exists (select 1 from public.itineraries i where i.id = itinerary_id and i.family_id = public.my_family_id())) with check (exists (select 1 from public.itineraries i where i.id = itinerary_id and i.family_id = public.my_family_id()));
 create policy "members manage family albums" on public.albums for all to authenticated using (family_id = public.my_family_id()) with check (family_id = public.my_family_id());

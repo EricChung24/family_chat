@@ -171,6 +171,7 @@ function App() {
   const [sessionName, setSessionName] = useState("");
   const [sessionUserId, setSessionUserId] = useState<string | null>(null);
   const [currentAvatarUrl, setCurrentAvatarUrl] = useState<string | null>(null);
+  const [unreadNotifications, setUnreadNotifications] = useState(0);
   const [detailId, setDetailId] = useState<string | null>(
     () =>
       window.location.pathname.match(/^\/forum\/posts\/([^/]+)/)?.[1] ?? null,
@@ -186,6 +187,21 @@ function App() {
     window.addEventListener("popstate", onPopState);
     return () => window.removeEventListener("popstate", onPopState);
   }, []);
+  useEffect(() => {
+    if (!supabase || !sessionUserId) {
+      setUnreadNotifications(0);
+      return;
+    }
+    supabase
+      .from("notifications")
+      .select("id", { count: "exact", head: true })
+      .eq("recipient_id", sessionUserId)
+      .is("read_at", null)
+      .then(({ count, error }) => {
+        logSupabaseError("notifications.unread", error);
+        if (!error) setUnreadNotifications(count ?? 0);
+      });
+  }, [sessionUserId]);
   useEffect(() => {
     if (!supabase) {
       setAuthReady(true);
@@ -383,10 +399,23 @@ function App() {
     setSessionEmail(null);
     setSessionUserId(null);
     setSessionName("");
+    setUnreadNotifications(0);
     setThreads([]);
     setProfilePanel(false);
     setTab("home");
     notify("已登出");
+  };
+  const openNotifications = async () => {
+    if (!supabase || !sessionUserId) return;
+    const count = unreadNotifications;
+    const result = await supabase
+      .from("notifications")
+      .update({ read_at: new Date().toISOString() })
+      .eq("recipient_id", sessionUserId)
+      .is("read_at", null);
+    logSupabaseError("notifications.markRead", result.error);
+    if (!result.error) setUnreadNotifications(0);
+    notify(count ? `你有 ${count} 則新的回覆通知` : "目前沒有新的回覆通知");
   };
   const openComposer = async () => {
     if (!supabase) {
@@ -695,11 +724,13 @@ function App() {
             </button>
             <button
               className="icon-button"
-              onClick={() => notify("你已掌握最新消息")}
+              onClick={openNotifications}
               aria-label="通知"
             >
               <Icon name="bell" />
-              <i />
+              {unreadNotifications > 0 && (
+                <i>{unreadNotifications > 99 ? "99+" : unreadNotifications}</i>
+              )}
             </button>
             {!authReady ? (
               <span className="muted">載入中…</span>
@@ -1544,6 +1575,19 @@ function ArticleDetailPage({
       notify(result.error?.message ?? "留言失敗");
       return;
     }
+    const replyTarget = replyingTo
+      ? replies.find((item) => item.id === replyingTo)
+      : null;
+    if (replyTarget && replyTarget.user_id !== liveUserId) {
+      const notification = await supabase.from("notifications").insert({
+        recipient_id: replyTarget.user_id,
+        actor_id: liveUserId,
+        thread_id: id,
+        post_id: result.data.id,
+        type: "reply",
+      });
+      logSupabaseError("notifications.reply", notification.error);
+    }
     setReplies((current) => [
       ...current,
       { ...result.data, author: "我", avatarUrl },
@@ -1551,6 +1595,27 @@ function ArticleDetailPage({
     setReply("");
     setReplyingTo(null);
     notify(replyingTo ? "回覆已發布" : "留言已發布");
+  };
+  const deleteReply = async (item: Reply) => {
+    if (
+      !supabase ||
+      item.user_id !== liveUserId ||
+      !window.confirm("確定要刪除這則留言嗎？")
+    )
+      return;
+    const result = await supabase
+      .from("posts")
+      .delete()
+      .eq("id", item.id)
+      .eq("user_id", liveUserId);
+    logSupabaseError("post.delete", result.error);
+    if (result.error) notify(result.error.message);
+    else {
+      setReplies((current) =>
+        current.filter((replyItem) => replyItem.id !== item.id),
+      );
+      notify("留言已刪除");
+    }
   };
   const uploadReplyImage = async (file: File) => {
     if (!supabase || !liveUserId) {
@@ -1769,6 +1834,16 @@ function ArticleDetailPage({
                         <Icon name="reply-all" />
                         回覆
                       </button>
+                      {item.user_id === liveUserId && (
+                        <button
+                          className="comment-delete-button"
+                          type="button"
+                          onClick={() => deleteReply(item)}
+                        >
+                          <Icon name="trash" />
+                          刪除
+                        </button>
+                      )}
                     </div>
                   </div>
                 </div>
