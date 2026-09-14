@@ -1357,6 +1357,7 @@ function ArticleDetailPage({
     avatarUrl?: string | null;
   };
   const [post, setPost] = useState<{
+    id: string;
     title: string;
     content: string;
     authorId: string;
@@ -1453,6 +1454,7 @@ function ArticleDetailPage({
       .eq("user_id", postAuthorId);
     setAuthorPostCount(countResult.count ?? 0);
     setPost({
+      id: first.id,
       title: result.data.title,
       content: decodeRichHtml(first.content),
       authorId: result.data.created_by,
@@ -1526,7 +1528,7 @@ function ArticleDetailPage({
     const postUpdate = await supabase
       .from("posts")
       .update({ content: content.trim() })
-      .eq("thread_id", id)
+      .eq("id", post.id)
       .eq("user_id", liveUserId);
     logSupabaseError("post.update", postUpdate.error);
     if (postUpdate.error) {
