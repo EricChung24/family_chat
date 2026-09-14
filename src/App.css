@@ -530,10 +530,33 @@ button {
   font-size: 10px;
 }
 .pinned {
-  color: var(--coral);
-  font-size: 8px;
-  letter-spacing: 0.12em;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: #241b12;
+  background: linear-gradient(135deg, #f4c878, #eaa65d);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
   margin-left: 8px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  box-shadow: 0 3px 10px #eaa65d33;
+  vertical-align: middle;
+}
+.pinned i {
+  font-size: 11px;
+}
+.thread-card:has(.pinned) {
+  border-color: #eaa65d88;
+  background: linear-gradient(135deg, #1b2a24, #17231f 72%, #392b1e);
+  box-shadow: 0 12px 28px #eaa65d18;
+}
+.thread-card:has(.pinned)::before {
+  background: #eaa65d;
+}
+.pin-toggle {
+  border-color: #eaa65d88 !important;
 }
 .thread-body h3 {
   font-size: 16px;

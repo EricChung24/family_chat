@@ -1408,6 +1408,7 @@ function ArticleDetailPage({
     createdAt: string;
     authorName: string;
     authorAvatarUrl?: string | null;
+    pinned: boolean;
   } | null>(null);
   const [replies, setReplies] = useState<Reply[]>([]);
   const [loading, setLoading] = useState(true);
@@ -1429,7 +1430,7 @@ function ArticleDetailPage({
     const result = await supabase
       .from("threads")
       .select(
-        "id,title,created_at,created_by,posts(id,content,created_at,user_id,parent_post_id)",
+        "id,title,created_at,created_by,pinned,posts(id,content,created_at,user_id,parent_post_id)",
       )
       .eq("id", id)
       .maybeSingle();
@@ -1514,6 +1515,7 @@ function ArticleDetailPage({
       createdAt: result.data.created_at,
       authorName: names.get(postAuthorId) ?? "會員",
       authorAvatarUrl: authorProfile?.avatar_url,
+      pinned: Boolean(result.data.pinned),
     });
     setReplies(
       rows
@@ -1620,6 +1622,27 @@ function ArticleDetailPage({
       onDeleted();
       onBack();
     }
+  };
+  const togglePinned = async () => {
+    if (!supabase || !post || post.authorId !== liveUserId) return;
+    const nextPinned = !post.pinned;
+    const result = await supabase
+      .from("threads")
+      .update({ pinned: nextPinned })
+      .eq("id", id)
+      .eq("created_by", liveUserId)
+      .select("pinned")
+      .maybeSingle();
+    logSupabaseError("thread.pin", result.error);
+    if (result.error || !result.data) {
+      notify(result.error?.message ?? "置頂狀態更新失敗");
+      return;
+    }
+    const savedPinned = Boolean(result.data?.pinned);
+    setPost((current) =>
+      current ? { ...current, pinned: savedPinned } : current,
+    );
+    notify(nextPinned ? "文章已置頂" : "已取消置頂");
   };
   const addReply = async () => {
     if (!supabase || !liveUserId || !reply.trim()) {
@@ -1829,6 +1852,15 @@ function ArticleDetailPage({
         </aside>
         <article className="article-content">
           <div className="article-actions">
+            {owner && (
+              <button
+                className="button ghost pin-toggle"
+                onClick={togglePinned}
+              >
+                <Icon name="pin" />
+                {post.pinned ? "取消置頂" : "置頂文章"}
+              </button>
+            )}
             <button
               className="button ghost"
               onClick={startReplyToArticle}
@@ -2112,7 +2144,12 @@ function ThreadCard({
         <div className="thread-meta">
           {thread.author}
           {!listOnly && ` · ${thread.time}`}
-          {thread.pinned && <b className="pinned">置頂</b>}
+          {thread.pinned && (
+            <b className="pinned" title="置頂文章">
+              <Icon name="pin" />
+              置頂
+            </b>
+          )}
         </div>
         <h3>{thread.title}</h3>
         {!compact && !listOnly && (
