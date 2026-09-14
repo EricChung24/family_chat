@@ -3069,7 +3069,7 @@ function TaiwanWeather() {
     let active = true;
     setLoading(true);
     setError(false);
-    const url = `https://api.open-meteo.com/v1/forecast?latitude=${city.lat}&longitude=${city.lon}&current=temperature_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m&hourly=precipitation_probability&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Asia%2FTaipei&forecast_days=5`;
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${city.lat}&longitude=${city.lon}&current=temperature_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m,relative_humidity_2m&hourly=temperature_2m,precipitation_probability,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Asia%2FTaipei&forecast_days=5`;
     fetch(url)
       .then((response) => (response.ok ? response.json() : Promise.reject()))
       .then((data) => active && setWeather(data))
@@ -3081,6 +3081,8 @@ function TaiwanWeather() {
   }, [city]);
   const weatherLabel = (code: number) =>
     code === 0 ? "晴朗" : code < 3 ? "多雲" : code < 60 ? "有雨" : "降雨";
+  const weatherIcon = (code: number) =>
+    code === 0 ? "sun" : code < 3 ? "cloud-sun" : "cloud-rain";
   return (
     <section className="weather-panel" aria-label="台灣天氣">
       <div className="weather-panel-head">
@@ -3130,6 +3132,35 @@ function TaiwanWeather() {
                 <span>
                   體感 {Math.round(weather.current.apparent_temperature)}°
                 </span>
+                <span>
+                  <Icon name="humidity" /> 濕度{" "}
+                  {weather.current.relative_humidity_2m}%
+                </span>
+              </div>
+            </div>
+            <div className="weather-hourly">
+              <h3>接下來幾小時</h3>
+              <div className="weather-hourly-track">
+                {weather.hourly.time
+                  .slice(0, 8)
+                  .map((time: string, index: number) => (
+                    <div className="weather-hour" key={time}>
+                      <small>
+                        {new Date(time).toLocaleTimeString("zh-TW", {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                          hour12: false,
+                        })}
+                      </small>
+                      <Icon
+                        name={weatherIcon(weather.hourly.weather_code[index])}
+                      />
+                      <b>{Math.round(weather.hourly.temperature_2m[index])}°</b>
+                      <span>
+                        {weather.hourly.precipitation_probability[index]}%
+                      </span>
+                    </div>
+                  ))}
               </div>
             </div>
             <div className="weather-forecast">
@@ -3143,6 +3174,7 @@ function TaiwanWeather() {
                           { weekday: "short" },
                         )}
                   </b>
+                  <Icon name={weatherIcon(weather.daily.weather_code[index])} />
                   <span>{weatherLabel(weather.daily.weather_code[index])}</span>
                   <strong>
                     {Math.round(weather.daily.temperature_2m_max[index])}°
