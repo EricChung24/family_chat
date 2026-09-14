@@ -2298,13 +2298,31 @@ function Albums({
       setUploadingPhoto(false);
       return;
     }
-    const { data: profile } = await supabase
+    let { data: profile, error: profileError } = await supabase
       .from("profiles")
       .select("family_id")
       .eq("id", user.id)
       .maybeSingle();
+    logSupabaseError("photos.profile", profileError);
     if (!profile?.family_id) {
-      notify("會員資料尚未同步");
+      const bootstrap = await supabase.rpc("bootstrap_family", {
+        p_display_name: user.email?.split("@")[0] ?? "會員",
+      });
+      logSupabaseError("photos.bootstrap_family", bootstrap.error);
+      if (bootstrap.error) {
+        notify(`會員資料同步失敗：${bootstrap.error.message}`);
+        setUploadingPhoto(false);
+        return;
+      }
+      ({ data: profile, error: profileError } = await supabase
+        .from("profiles")
+        .select("family_id")
+        .eq("id", user.id)
+        .maybeSingle());
+      logSupabaseError("photos.profile.retry", profileError);
+    }
+    if (!profile?.family_id) {
+      notify(profileError?.message ?? "會員資料尚未同步，請重新登入後再試");
       setUploadingPhoto(false);
       return;
     }
