@@ -34,6 +34,10 @@ const decodeRichHtml = (value: string) => {
       .replace(/&amp;/g, "&");
   return decoded;
 };
+const extractHashtags = (value: string) => {
+  const plainText = value.replace(/<[^>]*>/g, " ");
+  return Array.from(new Set(plainText.match(/#[\p{L}\p{N}_-]+/gu) ?? []));
+};
 
 function RichTextEditor({
   value,
@@ -796,6 +800,7 @@ function App() {
             <label className="composer-field-label" htmlFor="new-thread-body">
               內文
             </label>
+            <p className="tag-hint">可加入 #標籤，作為文章分類</p>
             <RichTextEditor
               value={draftBody}
               onChange={setDraftBody}
@@ -1552,6 +1557,18 @@ function ArticleDetailPage({
                 className="modal-body article-body"
                 dangerouslySetInnerHTML={{ __html: post.content }}
               />
+              {extractHashtags(`${post.title} ${post.content}`).length > 0 && (
+                <div className="article-tags" aria-label="文章標籤">
+                  <span className="tag-label">分類／標籤</span>
+                  {extractHashtags(`${post.title} ${post.content}`).map(
+                    (tag) => (
+                      <span className="hashtag" key={tag}>
+                        {tag}
+                      </span>
+                    ),
+                  )}
+                </div>
+              )}
             </>
           )}
         </article>
@@ -1724,6 +1741,16 @@ function ThreadCard({
             className="thread-rich-preview"
             dangerouslySetInnerHTML={{ __html: decodeRichHtml(thread.body) }}
           />
+        )}
+        {extractHashtags(`${thread.title} ${thread.body}`).length > 0 && (
+          <div className="thread-tags" aria-label="文章標籤">
+            <span className="tag-label">分類／標籤</span>
+            {extractHashtags(`${thread.title} ${thread.body}`).map((tag) => (
+              <span className="hashtag" key={tag}>
+                {tag}
+              </span>
+            ))}
+          </div>
         )}
         <div className="thread-footer">
           {thread.replies} 則回覆 <Icon name="arrow-up-right" />

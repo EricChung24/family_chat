@@ -802,8 +802,39 @@ button {
 .composer-title-input {
   margin: 0 0 14px;
 }
+.tag-hint {
+  margin: -7px 0 8px;
+  color: var(--muted);
+  font-size: 12px;
+}
 .composer-modal .rich-editor {
   margin-bottom: 18px;
+}
+.thread-tags,
+.article-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+.hashtag {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 2px 8px;
+  border: 1px solid #65b8ff66;
+  border-radius: 999px;
+  background: #20496666;
+  color: #9dd4ff;
+  font-size: 12px;
+  line-height: 1.3;
+}
+.tag-label {
+  align-self: center;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
 }
 .modal-actions {
   display: flex;
