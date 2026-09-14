@@ -2385,6 +2385,7 @@ function Albums({
   const [pendingLocation, setPendingLocation] = useState("");
   const [pendingCaption, setPendingCaption] = useState("");
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
+  const [showWeather, setShowWeather] = useState(false);
   const missingDescription = (error: { message?: string } | null) =>
     Boolean(
       error?.message?.toLowerCase().includes("description") &&
@@ -2954,12 +2955,21 @@ function Albums({
         title="收藏小日子"
         copy="把家人想留下的每個時刻放在一起。"
         action={
-          <button className="button primary" onClick={create}>
-            <Icon name="plus" />
-            新增相簿
-          </button>
+          <div className="album-hero-actions">
+            <button
+              className={`button ghost ${showWeather ? "is-active" : ""}`}
+              onClick={() => setShowWeather((value) => !value)}
+            >
+              <Icon name="cloud-sun" /> 台灣天氣
+            </button>
+            <button className="button primary" onClick={create}>
+              <Icon name="plus" />
+              新增相簿
+            </button>
+          </div>
         }
       />
+      {showWeather && <TaiwanWeather />}
       <section className="setting-card album-editor-create">
         <label>
           相簿名稱
@@ -3026,6 +3036,116 @@ function Albums({
         )}
       </div>
     </>
+  );
+}
+
+function TaiwanWeather() {
+  const cities = [
+    { name: "台北", lat: 25.0375, lon: 121.5637 },
+    { name: "台中", lat: 24.1477, lon: 120.6736 },
+    { name: "高雄", lat: 22.6273, lon: 120.3014 },
+    { name: "花蓮", lat: 23.9911, lon: 121.6112 },
+  ];
+  const [city, setCity] = useState(cities[0]);
+  const [weather, setWeather] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+  useEffect(() => {
+    let active = true;
+    setLoading(true);
+    setError(false);
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${city.lat}&longitude=${city.lon}&current=temperature_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m&hourly=precipitation_probability&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Asia%2FTaipei&forecast_days=5`;
+    fetch(url)
+      .then((response) => (response.ok ? response.json() : Promise.reject()))
+      .then((data) => active && setWeather(data))
+      .catch(() => active && setError(true))
+      .finally(() => active && setLoading(false));
+    return () => {
+      active = false;
+    };
+  }, [city]);
+  const weatherLabel = (code: number) =>
+    code === 0 ? "晴朗" : code < 3 ? "多雲" : code < 60 ? "有雨" : "降雨";
+  return (
+    <section className="weather-panel" aria-label="台灣天氣">
+      <div className="weather-panel-head">
+        <div>
+          <p className="eyebrow">
+            <Icon name="cloud-sun" /> 台灣天氣
+          </p>
+          <h2>{city.name}即時天氣</h2>
+        </div>
+        <select
+          value={city.name}
+          onChange={(event) =>
+            setCity(
+              cities.find((item) => item.name === event.target.value) ??
+                cities[0],
+            )
+          }
+          aria-label="選擇城市"
+        >
+          {cities.map((item) => (
+            <option key={item.name}>{item.name}</option>
+          ))}
+        </select>
+      </div>
+      {loading ? (
+        <p className="muted">天氣資料載入中…</p>
+      ) : error ? (
+        <p className="muted">暫時無法取得天氣資料，請稍後再試。</p>
+      ) : (
+        weather && (
+          <>
+            <div className="weather-current">
+              <div className="weather-temp">
+                <Icon name="sun" />
+                <strong>{Math.round(weather.current.temperature_2m)}°</strong>
+                <span>{weatherLabel(weather.current.weather_code)}</span>
+              </div>
+              <div className="weather-metrics">
+                <span>
+                  <Icon name="raindrops" /> 降雨{" "}
+                  {weather.daily.precipitation_probability_max[0]}%
+                </span>
+                <span>
+                  <Icon name="wind" /> 風速{" "}
+                  {Math.round(weather.current.wind_speed_10m)} km/h
+                </span>
+                <span>
+                  體感 {Math.round(weather.current.apparent_temperature)}°
+                </span>
+              </div>
+            </div>
+            <div className="weather-forecast">
+              {weather.daily.time.map((date: string, index: number) => (
+                <div className="weather-day" key={date}>
+                  <b>
+                    {index === 0
+                      ? "今天"
+                      : new Date(`${date}T00:00:00+08:00`).toLocaleDateString(
+                          "zh-TW",
+                          { weekday: "short" },
+                        )}
+                  </b>
+                  <span>{weatherLabel(weather.daily.weather_code[index])}</span>
+                  <strong>
+                    {Math.round(weather.daily.temperature_2m_max[index])}°
+                  </strong>
+                  <small>
+                    <Icon name="raindrops" />{" "}
+                    {weather.daily.precipitation_probability_max[index]}%
+                  </small>
+                </div>
+              ))}
+            </div>
+          </>
+        )
+      )}
+      <small className="weather-credit">
+        資料來源：Open-Meteo（免費非商業使用）
+      </small>
+    </section>
   );
 }
 
