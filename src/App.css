@@ -566,6 +566,47 @@ button {
   font-size: 16px;
   margin: 7px 0 6px;
 }
+.thread-title-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+.thread-title-row > span:first-child {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.thread-badges {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.dynamic-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 19px;
+  padding: 2px 7px;
+  border-radius: 999px;
+  font-size: 9px;
+  line-height: 1;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+}
+.badge-hot {
+  color: #fff3df;
+  background: #cf624f;
+  box-shadow: 0 3px 10px #cf624f40;
+}
+.badge-new {
+  color: #e8f7ff;
+  background: #347ca4;
+  box-shadow: 0 3px 10px #347ca440;
+}
+.badge-recommended {
+  color: #2c2115;
+  background: #e9bd70;
+  box-shadow: 0 3px 10px #e9bd7040;
+}
 .thread-body p {
   margin: 0;
   color: var(--muted);

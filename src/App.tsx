@@ -21,6 +21,7 @@ type Thread = {
   replies: number;
   tone: string;
   pinned?: boolean;
+  createdAt?: string;
 };
 type ProfileInfo = { displayName: string; avatarUrl?: string | null };
 const decodeRichHtml = (value: string) => {
@@ -148,6 +149,7 @@ function setThreadsFromDatabase(
       replies: Math.max((row.posts?.length ?? 0) - 1, 0),
       tone: index % 2 ? "forest" : "coral",
       pinned: row.pinned,
+      createdAt: row.created_at,
     };
   });
 }
@@ -2128,6 +2130,11 @@ function ThreadCard({
   compact?: boolean;
   listOnly?: boolean;
 }) {
+  const isNew = thread.createdAt
+    ? Date.now() - new Date(thread.createdAt).getTime() <=
+      3 * 24 * 60 * 60 * 1000
+    : false;
+  const isHot = thread.replies >= 5;
   return (
     <article
       className={`thread-card ${compact ? "thread-card-compact" : ""}`}
@@ -2152,7 +2159,16 @@ function ThreadCard({
             </b>
           )}
         </div>
-        <h3>{thread.title}</h3>
+        <h3 className="thread-title-row">
+          <span>{thread.title}</span>
+          <span className="thread-badges" aria-label="文章標籤">
+            {isHot && <b className="dynamic-badge badge-hot">HOT</b>}
+            {isNew && <b className="dynamic-badge badge-new">NEW</b>}
+            {thread.pinned && (
+              <b className="dynamic-badge badge-recommended">推薦</b>
+            )}
+          </span>
+        </h3>
         {!compact && !listOnly && (
           <div
             className="thread-rich-preview"
