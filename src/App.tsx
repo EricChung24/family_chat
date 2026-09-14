@@ -1597,6 +1597,7 @@ function ArticleDetailPage({
                       <small>
                         {new Date(item.created_at).toLocaleString("zh-TW")}
                       </small>
+                      <span className="comment-floor">{index + 1}樓</span>
                     </div>
                     <div dangerouslySetInnerHTML={{ __html: item.content }} />
                     <div className="comment-actions">
