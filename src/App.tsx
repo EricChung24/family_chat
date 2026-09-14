@@ -1530,16 +1530,29 @@ function ArticleDetailPage({
       <div className="comment-stack">
         {replies.length > 0 && <h2>留言／回覆</h2>}
         {replies.length > 0 &&
-          replies.map((item) => {
+          replies.map((item, index) => {
             const parent = replies.find(
               (candidate) => candidate.id === item.parent_post_id,
+            );
+            const next = replies[index + 1];
+            const hasThreadContinuation = Boolean(
+              next &&
+              (next.parent_post_id === item.id ||
+                (Boolean(item.parent_post_id) &&
+                  (next.parent_post_id === item.parent_post_id ||
+                    next.id === item.parent_post_id))),
             );
             return (
               <div
                 className={`comment-item ${item.parent_post_id ? "comment-item-reply" : ""}`}
                 key={item.id}
               >
-                <Avatar src={item.avatarUrl} fallback={item.author[0]} />
+                <div className="comment-rail" aria-hidden="true">
+                  <Avatar src={item.avatarUrl} fallback={item.author[0]} />
+                  <span
+                    className={`comment-thread-line ${hasThreadContinuation ? "is-visible" : ""}`}
+                  />
+                </div>
                 <div className="comment-main">
                   {parent && (
                     <span className="reply-context">回覆 {parent.author}</span>
