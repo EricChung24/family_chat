@@ -572,14 +572,19 @@ function App() {
     <div className="app-shell">
       <aside className="rail">
         <div className="brand-mark">吾</div>
-        <div className="family-switcher">
+        <button
+          className="family-switcher brand-home-button"
+          type="button"
+          onClick={() => setTab("home")}
+          aria-label="回到首頁"
+        >
           <div className="avatar avatar-small">吾</div>
           <div>
             <b>吾黨所鍾</b>
             <small>我們的家庭空間</small>
           </div>
           <Icon name="angle-small-down" />
-        </div>
+        </button>
         <nav>
           {(["home", "discussions", "trips", "albums"] as Tab[]).map((item) => (
             <Nav
@@ -627,10 +632,15 @@ function App() {
       </aside>
       <main className="main-canvas">
         <header className="topbar">
-          <div className="mobile-brand">
+          <button
+            className="mobile-brand brand-home-button"
+            type="button"
+            onClick={() => setTab("home")}
+            aria-label="回到首頁"
+          >
             <div className="brand-mark">吾</div>
             <b>吾黨所鍾</b>
-          </div>
+          </button>
           <div className="breadcrumb">
             <span>吾黨所鍾</span>
             <span>/</span>

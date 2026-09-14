@@ -61,6 +61,17 @@ button {
   border-color: var(--line);
   background: var(--white);
 }
+.brand-home-button {
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+.mobile-brand.brand-home-button {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  text-align: left;
+}
 .family-switcher b,
 .family-switcher small {
   display: block;
