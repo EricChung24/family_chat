@@ -781,6 +781,19 @@ button {
 .composer-modal textarea:focus {
   border-color: var(--forest);
 }
+.composer-field-label {
+  display: block;
+  margin: 0 0 5px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+.composer-title-input {
+  margin: 0 0 14px;
+}
+.composer-modal .rich-editor {
+  margin-bottom: 18px;
+}
 .modal-actions {
   display: flex;
   justify-content: flex-end;

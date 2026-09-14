@@ -142,6 +142,7 @@ function App() {
   const [tab, setTab] = useState<Tab | "profile">("home");
   const [threads, setThreads] = useState<Thread[]>(initialThreads);
   const [draft, setDraft] = useState("");
+  const [draftBody, setDraftBody] = useState("");
   const [compose, setCompose] = useState(false);
   const [toast, setToast] = useState("");
   const [profilePanel, setProfilePanel] = useState(false);
@@ -451,7 +452,7 @@ function App() {
       notify("請先登入會員並連接 Supabase");
       return;
     }
-    if (!draft.trim()) return;
+    if (!draft.trim() || !draftBody.replace(/<[^>]*>/g, "").trim()) return;
     const {
       data: { user },
     } = await supabase.auth.getUser();
@@ -503,7 +504,7 @@ function App() {
     const post = await supabase.from("posts").insert({
       thread_id: thread.id,
       user_id: user.id,
-      content: draft.trim(),
+      content: draftBody.trim(),
     });
     logSupabaseError("posts.insert", post.error);
     if (post.error) {
@@ -511,6 +512,7 @@ function App() {
       return;
     }
     setDraft("");
+    setDraftBody("");
     setCompose(false);
     notify("討論已分享給家人");
     const refreshed = await supabase
@@ -769,9 +771,23 @@ function App() {
           >
             <p className="eyebrow">新增討論</p>
             <h2>最近有什麼想分享？</h2>
-            <RichTextEditor
+            <label className="composer-field-label" htmlFor="new-thread-title">
+              標題
+            </label>
+            <input
+              id="new-thread-title"
+              className="auth-input composer-title-input"
               value={draft}
-              onChange={setDraft}
+              onChange={(event) => setDraft(event.target.value)}
+              placeholder="輸入討論標題…"
+              maxLength={120}
+            />
+            <label className="composer-field-label" htmlFor="new-thread-body">
+              內文
+            </label>
+            <RichTextEditor
+              value={draftBody}
+              onChange={setDraftBody}
               onImageUpload={uploadEditorImage}
               placeholder="分享一則留言、一個問題，或一件小小的好事……"
             />
@@ -784,7 +800,9 @@ function App() {
               </button>
               <button
                 className="button primary"
-                disabled={!draft.replace(/<[^>]*>/g, "").trim()}
+                disabled={
+                  !draft.trim() || !draftBody.replace(/<[^>]*>/g, "").trim()
+                }
                 onClick={addThread}
               >
                 分享給家人
