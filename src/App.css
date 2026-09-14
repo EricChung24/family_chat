@@ -233,62 +233,6 @@ button {
 .top-search-input:focus {
   border-color: var(--forest);
 }
-.music-player {
-  position: fixed;
-  right: 18px;
-  bottom: 18px;
-  z-index: 8;
-}
-.music-player-toggle {
-  display: grid;
-  width: 42px;
-  height: 42px;
-  place-items: center;
-  border: 1px solid #a9b9ad88;
-  border-radius: 50%;
-  background: #111b17ee;
-  color: #d8e1da;
-  box-shadow: 0 8px 24px #0005;
-  cursor: pointer;
-}
-.music-player-toggle:hover {
-  background: #285c4d;
-}
-.music-player.is-open {
-  display: grid;
-  grid-template-columns: 42px 240px;
-  align-items: center;
-  gap: 7px;
-  padding: 7px;
-  border: 1px solid #a9b9ad55;
-  border-radius: 14px;
-  background: #111b17ee;
-  box-shadow: 0 12px 36px #0006;
-}
-.music-player.is-open iframe {
-  display: block;
-  width: 240px;
-  height: 72px;
-  border: 0;
-  border-radius: 8px;
-}
-@media (max-width: 600px) {
-  .music-player {
-    right: 10px;
-    bottom: calc(72px + env(safe-area-inset-bottom));
-  }
-  .music-player.is-open {
-    grid-template-columns: 38px 190px;
-  }
-  .music-player.is-open iframe {
-    width: 190px;
-    height: 64px;
-  }
-  .music-player-toggle {
-    width: 38px;
-    height: 38px;
-  }
-}
 .icon-button {
   width: 36px;
   height: 36px;
