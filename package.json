@@ -12,6 +12,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@flaticon/flaticon-uicons": "^3.3.1",
     "@supabase/supabase-js": "^2.116.0",
     "@tiptap/extension-color": "^3.31.3",
     "@tiptap/extension-font-family": "^3.31.3",
@@ -20,7 +21,6 @@
     "@tiptap/extension-text-style": "^3.31.3",
     "@tiptap/react": "^3.31.3",
     "@tiptap/starter-kit": "^3.31.3",
-    "lucide-react": "^1.45.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "react-quill-new": "^3.8.3"
@@ -31,6 +31,7 @@
     "@types/react-dom": "^19.2.7",
     "@vitejs/plugin-react": "^6.1.1",
     "oxlint": "^1.81.0",
+    "prettier": "^3.9.6",
     "typescript": "~6.0.2",
     "vite": "^8.3.0"
   }

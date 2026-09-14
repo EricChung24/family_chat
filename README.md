@@ -30,14 +30,14 @@ Family Chat is a responsive React web app for a small, trusted family group. Mem
 
 ## 🧭 Product areas
 
-| Area | What members can do |
-| --- | --- |
-| 🏠 Home | See the latest family activity and shared albums |
-| 📈 Discussions | Publish, edit, delete, and open full article details |
-| 💬 Conversations | Add formatted comments and identify the original poster |
-| 🖼️ Albums | Upload, preview, describe, locate, edit, and delete photos |
-| 🗓️ Trips | Record family itineraries and date ranges |
-| 👤 Profile | Manage name, avatar, title, badge color, and size |
+| Area             | What members can do                                        |
+| ---------------- | ---------------------------------------------------------- |
+| 🏠 Home          | See the latest family activity and shared albums           |
+| 📈 Discussions   | Publish, edit, delete, and open full article details       |
+| 💬 Conversations | Add formatted comments and identify the original poster    |
+| 🖼️ Albums        | Upload, preview, describe, locate, edit, and delete photos |
+| 🗓️ Trips         | Record family itineraries and date ranges                  |
+| 👤 Profile       | Manage name, avatar, title, badge color, and size          |
 
 ## 🧱 Architecture
 
@@ -69,12 +69,12 @@ The client is intentionally thin: family membership and authorization are enforc
 
 ## 🧪 Useful scripts
 
-| Command | Purpose |
-| --- | --- |
-| `npm run dev` | Start the local Vite server |
-| `npm run typecheck` | Validate TypeScript |
-| `npm run build` | Create the production bundle |
-| `npm test` | Run security and repository tests |
+| Command             | Purpose                           |
+| ------------------- | --------------------------------- |
+| `npm run dev`       | Start the local Vite server       |
+| `npm run typecheck` | Validate TypeScript               |
+| `npm run build`     | Create the production bundle      |
+| `npm test`          | Run security and repository tests |
 
 ## 🔄 Development workflow
 
@@ -102,16 +102,16 @@ Database changes should be backwards-compatible whenever possible. Never commit 
 
 ## Technical specifications
 
-| Layer | Technology |
-| --- | --- |
-| Frontend | React 18, TypeScript, Vite |
-| Styling | CSS, responsive layouts, glassmorphism theme |
-| Rich text | `react-quill-new` / Quill |
-| Icons | `lucide-react` |
-| Backend | Supabase Auth, PostgreSQL, Row Level Security |
-| Media | Supabase Storage (`family-photos`) with signed URLs |
-| Hosting | Vercel SPA deployment |
-| Quality | TypeScript build/typecheck and Node security tests |
+| Layer     | Technology                                          |
+| --------- | --------------------------------------------------- |
+| Frontend  | React 18, TypeScript, Vite                          |
+| Styling   | CSS, responsive layouts, glassmorphism theme        |
+| Rich text | `react-quill-new` / Quill                           |
+| Icons     | Flaticon UIcons Regular Rounded                     |
+| Backend   | Supabase Auth, PostgreSQL, Row Level Security       |
+| Media     | Supabase Storage (`family-photos`) with signed URLs |
+| Hosting   | Vercel SPA deployment                               |
+| Quality   | TypeScript build/typecheck and Node security tests  |
 
 ## Local development
 

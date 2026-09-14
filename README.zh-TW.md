@@ -30,14 +30,14 @@ Family Chat 是一個響應式 React 家庭社群網站。家庭成員可以發�
 
 ## 🧭 功能區域
 
-| 區域 | 家庭成員可以做什麼 |
-| --- | --- |
-| 🏠 首頁 | 查看最新家庭動態與共享相簿 |
-| 📈 討論 | 發布、編輯、刪除文章並查看詳情 |
-| 💬 對話 | 發布富文字留言並標示原Po |
-| 🖼️ 相簿 | 上傳、預覽、描述、標記地點、編輯與刪除照片 |
-| 🗓️ 行程 | 記錄家庭行程與日期範圍 |
-| 👤 個人檔案 | 管理名稱、大頭貼、稱號與徽章樣式 |
+| 區域        | 家庭成員可以做什麼                         |
+| ----------- | ------------------------------------------ |
+| 🏠 首頁     | 查看最新家庭動態與共享相簿                 |
+| 📈 討論     | 發布、編輯、刪除文章並查看詳情             |
+| 💬 對話     | 發布富文字留言並標示原Po                   |
+| 🖼️ 相簿     | 上傳、預覽、描述、標記地點、編輯與刪除照片 |
+| 🗓️ 行程     | 記錄家庭行程與日期範圍                     |
+| 👤 個人檔案 | 管理名稱、大頭貼、稱號與徽章樣式           |
 
 ## 🧱 系統架構
 
@@ -69,12 +69,12 @@ React + TypeScript + Vite
 
 ## 🧪 常用指令
 
-| 指令 | 用途 |
-| --- | --- |
-| `npm run dev` | 啟動本機 Vite 開發伺服器 |
-| `npm run typecheck` | 檢查 TypeScript 型別 |
-| `npm run build` | 建立正式版本 bundle |
-| `npm test` | 執行安全性與 repository 測試 |
+| 指令                | 用途                         |
+| ------------------- | ---------------------------- |
+| `npm run dev`       | 啟動本機 Vite 開發伺服器     |
+| `npm run typecheck` | 檢查 TypeScript 型別         |
+| `npm run build`     | 建立正式版本 bundle          |
+| `npm test`          | 執行安全性與 repository 測試 |
 
 ## 🔄 開發流程
 
@@ -102,16 +102,16 @@ React + TypeScript + Vite
 
 ## 技術規格
 
-| 層級 | 技術 |
-| --- | --- |
-| 前端 | React 18、TypeScript、Vite |
-| 樣式 | CSS、響應式版面、毛玻璃主題 |
-| 富文字 | `react-quill-new`／Quill |
-| 圖示 | `lucide-react` |
-| 後端 | Supabase Auth、PostgreSQL、Row Level Security |
-| 媒體 | Supabase Storage（`family-photos`）與簽名 URL |
-| 部署 | Vercel SPA |
-| 品質檢查 | TypeScript 型別檢查／建置與 Node 安全測試 |
+| 層級     | 技術                                          |
+| -------- | --------------------------------------------- |
+| 前端     | React 18、TypeScript、Vite                    |
+| 樣式     | CSS、響應式版面、毛玻璃主題                   |
+| 富文字   | `react-quill-new`／Quill                      |
+| 圖示     | Flaticon UIcons Regular Rounded               |
+| 後端     | Supabase Auth、PostgreSQL、Row Level Security |
+| 媒體     | Supabase Storage（`family-photos`）與簽名 URL |
+| 部署     | Vercel SPA                                    |
+| 品質檢查 | TypeScript 型別檢查／建置與 Node 安全測試     |
 
 ## 本機開發
 
