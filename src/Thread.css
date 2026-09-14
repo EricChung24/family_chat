@@ -654,6 +654,12 @@
   border-radius: 12px;
   mask-image: linear-gradient(to bottom, transparent, #000 7%, #000 93%, transparent);
 }
+/* Keep the overlay out of document flow; article child defaults otherwise
+   promote it back to position: relative and cause a layout jump. */
+.article-content > .danmaku-layer {
+  position: absolute;
+  z-index: 3;
+}
 .danmaku-item {
   position: absolute;
   top: var(--danmaku-top);
