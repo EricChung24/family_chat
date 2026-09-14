@@ -1530,57 +1530,73 @@ function ArticleDetailPage({
       <div className="comment-stack">
         {replies.length > 0 && <h2>留言／回覆</h2>}
         {replies.length > 0 &&
-          replies.map((item, index) => {
-            const parent = replies.find(
-              (candidate) => candidate.id === item.parent_post_id,
+          (() => {
+            const parentById = new Map(
+              replies.map((replyItem) => [
+                replyItem.id,
+                replyItem.parent_post_id,
+              ]),
             );
-            const next = replies[index + 1];
-            const hasThreadContinuation = Boolean(
-              next &&
-              (next.parent_post_id === item.id ||
-                (Boolean(item.parent_post_id) &&
-                  (next.parent_post_id === item.parent_post_id ||
-                    next.id === item.parent_post_id))),
-            );
-            return (
-              <div
-                className={`comment-item ${item.parent_post_id ? "comment-item-reply" : ""}`}
-                key={item.id}
-              >
-                <div className="comment-rail" aria-hidden="true">
-                  <Avatar src={item.avatarUrl} fallback={item.author[0]} />
-                  <span
-                    className={`comment-thread-line ${hasThreadContinuation ? "is-visible" : ""}`}
-                  />
-                </div>
-                <div className="comment-main">
-                  <div className="comment-header">
-                    {parent && (
-                      <span className="reply-context">
-                        回覆 {parent.author}
-                      </span>
-                    )}
-                    <b>{item.author}</b>
-                    <small>
-                      {new Date(item.created_at).toLocaleString("zh-TW")}
-                    </small>
+            const getThreadRoot = (item: (typeof replies)[number]) => {
+              let rootId = item.id;
+              let parentId = item.parent_post_id;
+              const visited = new Set<string>();
+              while (parentId && !visited.has(parentId)) {
+                visited.add(parentId);
+                rootId = parentId;
+                parentId = parentById.get(parentId) ?? null;
+              }
+              return rootId;
+            };
+            return replies.map((item, index) => {
+              const parent = replies.find(
+                (candidate) => candidate.id === item.parent_post_id,
+              );
+              const replyTargetName = parent?.author ?? post?.authorName;
+              const next = replies[index + 1];
+              const hasThreadContinuation = Boolean(
+                next && getThreadRoot(next) === getThreadRoot(item),
+              );
+              return (
+                <div
+                  className={`comment-item ${item.parent_post_id ? "comment-item-reply" : ""}`}
+                  key={item.id}
+                >
+                  <div className="comment-rail" aria-hidden="true">
+                    <Avatar src={item.avatarUrl} fallback={item.author[0]} />
+                    <span
+                      className={`comment-thread-line ${hasThreadContinuation ? "is-visible" : ""}`}
+                    />
                   </div>
-                  <div dangerouslySetInnerHTML={{ __html: item.content }} />
-                  <div className="comment-actions">
-                    <button
-                      className="comment-reply-button"
-                      type="button"
-                      onClick={() => startReply(item)}
-                      disabled={!sessionEmail}
-                    >
-                      <Icon name="reply-all" />
-                      回覆
-                    </button>
+                  <div className="comment-main">
+                    <div className="comment-header">
+                      {item.parent_post_id && replyTargetName && (
+                        <span className="reply-context">
+                          回覆 {replyTargetName}
+                        </span>
+                      )}
+                      <b>{item.author}</b>
+                      <small>
+                        {new Date(item.created_at).toLocaleString("zh-TW")}
+                      </small>
+                    </div>
+                    <div dangerouslySetInnerHTML={{ __html: item.content }} />
+                    <div className="comment-actions">
+                      <button
+                        className="comment-reply-button"
+                        type="button"
+                        onClick={() => startReply(item)}
+                        disabled={!sessionEmail}
+                      >
+                        <Icon name="reply-all" />
+                        回覆
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            });
+          })()}
         {sessionEmail ? (
           <>
             {replyTarget && (

@@ -525,6 +525,15 @@
 .comment-header .reply-context {
   order: 3;
   flex-basis: 100%;
+  display: block;
+  width: fit-content;
+  margin: 0;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #38564a;
+  color: #c9ded3;
+  font-size: 12px;
+  line-height: 1.35;
 }
 .comment-header b {
   flex: 0 1 auto;
