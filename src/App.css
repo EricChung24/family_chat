@@ -802,6 +802,10 @@ button {
 .composer-title-input {
   margin: 0 0 14px;
 }
+.composer-category-input,
+.composer-tags-input {
+  margin: 0 0 14px;
+}
 .tag-hint {
   margin: -7px 0 8px;
   color: var(--muted);
@@ -835,6 +839,10 @@ button {
   font-size: 11px;
   font-weight: 700;
   white-space: nowrap;
+}
+.thread-rich-preview .post-tags,
+.article-body .post-tags {
+  display: none;
 }
 .modal-actions {
   display: flex;

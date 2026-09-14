@@ -38,6 +38,12 @@ const extractHashtags = (value: string) => {
   const plainText = value.replace(/<[^>]*>/g, " ");
   return Array.from(new Set(plainText.match(/#[\p{L}\p{N}_-]+/gu) ?? []));
 };
+const normalizeHashtags = (value: string) =>
+  value
+    .split(/[\s,，、]+/)
+    .map((tag) => tag.replace(/^#+/, "").replace(/[^\p{L}\p{N}_-]/gu, ""))
+    .filter(Boolean)
+    .map((tag) => `#${tag}`);
 
 function RichTextEditor({
   value,
@@ -148,6 +154,8 @@ function App() {
   const [threads, setThreads] = useState<Thread[]>(initialThreads);
   const [draft, setDraft] = useState("");
   const [draftBody, setDraftBody] = useState("");
+  const [draftCategory, setDraftCategory] = useState("日常");
+  const [draftTags, setDraftTags] = useState("");
   const [compose, setCompose] = useState(false);
   const [toast, setToast] = useState("");
   const [profilePanel, setProfilePanel] = useState(false);
@@ -506,10 +514,15 @@ function App() {
       notify(error?.message ?? "討論建立失敗");
       return;
     }
+    const categoryTag = normalizeHashtags(draftCategory)[0] ?? "#日常";
+    const customTags = normalizeHashtags(draftTags).filter(
+      (tag) => tag !== categoryTag,
+    );
+    const metadataTags = [categoryTag, ...customTags].join(" ");
     const post = await supabase.from("posts").insert({
       thread_id: thread.id,
       user_id: user.id,
-      content: draftBody.trim(),
+      content: `${draftBody.trim()}<p class="post-tags">${metadataTags}</p>`,
     });
     logSupabaseError("posts.insert", post.error);
     if (post.error) {
@@ -518,6 +531,8 @@ function App() {
     }
     setDraft("");
     setDraftBody("");
+    setDraftCategory("日常");
+    setDraftTags("");
     setCompose(false);
     notify("討論已分享給家人");
     const refreshed = await supabase
@@ -796,6 +811,35 @@ function App() {
               onChange={(event) => setDraft(event.target.value)}
               placeholder="輸入討論標題…"
               maxLength={120}
+            />
+            <label
+              className="composer-field-label"
+              htmlFor="new-thread-category"
+            >
+              分類
+            </label>
+            <select
+              id="new-thread-category"
+              className="auth-input composer-category-input"
+              value={draftCategory}
+              onChange={(event) => setDraftCategory(event.target.value)}
+            >
+              <option value="日常">日常</option>
+              <option value="家庭活動">家庭活動</option>
+              <option value="旅遊">旅遊</option>
+              <option value="美食">美食</option>
+              <option value="重要通知">重要通知</option>
+              <option value="自訂">自訂（請在標籤輸入）</option>
+            </select>
+            <label className="composer-field-label" htmlFor="new-thread-tags">
+              標籤
+            </label>
+            <input
+              id="new-thread-tags"
+              className="auth-input composer-tags-input"
+              value={draftTags}
+              onChange={(event) => setDraftTags(event.target.value)}
+              placeholder="#週末 #聚餐（可用空格或逗號分隔）"
             />
             <label className="composer-field-label" htmlFor="new-thread-body">
               內文
