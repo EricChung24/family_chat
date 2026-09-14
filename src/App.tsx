@@ -815,6 +815,7 @@ function App() {
                 threads={threads}
                 compose={openComposer}
                 notify={notify}
+                sessionUserId={sessionUserId}
                 onOpen={(id) => {
                   history.pushState({}, "", `/forum/posts/${id}`);
                   setDetailId(id);
@@ -1282,13 +1283,21 @@ function Discussions({
   threads,
   compose,
   notify,
+  sessionUserId,
   onOpen,
 }: {
   threads: Thread[];
   compose: () => void;
   notify: (m: string) => void;
+  sessionUserId: string | null;
   onOpen: (id: string) => void;
 }) {
+  const [filter, setFilter] = useState<"all" | "pinned" | "mine">("all");
+  const visibleThreads = threads.filter((thread) => {
+    if (filter === "pinned") return Boolean(thread.pinned);
+    if (filter === "mine") return thread.authorId === sessionUserId;
+    return true;
+  });
   return (
     <>
       <Hero
@@ -1303,9 +1312,24 @@ function Discussions({
         }
       />
       <div className="filter-row">
-        <button className="filter active">全部貼文</button>
-        <button className="filter">置頂</button>
-        <button className="filter">我的貼文</button>
+        <button
+          className={`filter ${filter === "all" ? "active" : ""}`}
+          onClick={() => setFilter("all")}
+        >
+          全部貼文
+        </button>
+        <button
+          className={`filter ${filter === "pinned" ? "active" : ""}`}
+          onClick={() => setFilter("pinned")}
+        >
+          置頂
+        </button>
+        <button
+          className={`filter ${filter === "mine" ? "active" : ""}`}
+          onClick={() => setFilter("mine")}
+        >
+          我的貼文
+        </button>
         <span />
         <button
           className="icon-button"
@@ -1316,7 +1340,7 @@ function Discussions({
         </button>
       </div>
       <div className="thread-list expanded">
-        {threads.map((thread) => (
+        {visibleThreads.map((thread) => (
           <ThreadCard
             key={thread.id ?? thread.title}
             thread={thread}
@@ -1324,6 +1348,11 @@ function Discussions({
             onClick={() => thread.id && onOpen(thread.id)}
           />
         ))}
+        {visibleThreads.length === 0 && (
+          <div className="empty-state">
+            <p>目前沒有符合的文章。</p>
+          </div>
+        )}
       </div>
     </>
   );
@@ -1394,13 +1423,18 @@ function ArticleDetailPage({
       setLoading(false);
       return;
     }
-    const rows = (result.data.posts ?? []) as Array<{
-      id: string;
-      content: string;
-      created_at: string;
-      user_id: string;
-      parent_post_id?: string | null;
-    }>;
+    const rows = (
+      [...(result.data.posts ?? [])] as Array<{
+        id: string;
+        content: string;
+        created_at: string;
+        user_id: string;
+        parent_post_id?: string | null;
+      }>
+    ).sort(
+      (a, b) =>
+        new Date(a.created_at).getTime() - new Date(b.created_at).getTime(),
+    );
     const profileIds = [
       ...new Set([result.data.created_by, ...rows.map((row) => row.user_id)]),
     ];
@@ -1584,9 +1618,11 @@ function ArticleDetailPage({
     const replyTarget = replyingTo
       ? replies.find((item) => item.id === replyingTo)
       : null;
-    if (replyTarget && replyTarget.user_id !== liveUserId) {
+    const replyTargetUserId =
+      replyingTo === post?.id ? post.authorId : replyTarget?.user_id;
+    if (replyTargetUserId && replyTargetUserId !== liveUserId) {
       const notification = await supabase.from("notifications").insert({
-        recipient_id: replyTarget.user_id,
+        recipient_id: replyTargetUserId,
         actor_id: liveUserId,
         thread_id: id,
         post_id: result.data.id,
@@ -1617,8 +1653,23 @@ function ArticleDetailPage({
     logSupabaseError("post.delete", result.error);
     if (result.error) notify(result.error.message);
     else {
+      const idsToRemove = new Set<string>([item.id]);
+      let changed = true;
+      while (changed) {
+        changed = false;
+        for (const candidate of replies) {
+          if (
+            candidate.parent_post_id &&
+            idsToRemove.has(candidate.parent_post_id) &&
+            !idsToRemove.has(candidate.id)
+          ) {
+            idsToRemove.add(candidate.id);
+            changed = true;
+          }
+        }
+      }
       setReplies((current) =>
-        current.filter((replyItem) => replyItem.id !== item.id),
+        current.filter((replyItem) => !idsToRemove.has(replyItem.id)),
       );
       notify("留言已刪除");
     }
@@ -1703,8 +1754,22 @@ function ArticleDetailPage({
     );
   const owner = post.authorId === liveUserId;
   const replyTarget = replies.find((item) => item.id === replyingTo);
+  const replyTargetName =
+    replyingTo === post.id ? post.authorName : replyTarget?.author;
   const startReply = (item: Reply) => {
     setReplyingTo(item.id);
+    window.setTimeout(() => {
+      const box = document.querySelector(".comment-box");
+      if (!box) return;
+      const top = box.getBoundingClientRect().top + window.scrollY;
+      window.scrollTo({
+        top: Math.max(0, top - window.innerHeight / 2),
+        behavior: "smooth",
+      });
+    }, 0);
+  };
+  const startReplyToArticle = () => {
+    setReplyingTo(post.id);
     window.setTimeout(() => {
       const box = document.querySelector(".comment-box");
       if (!box) return;
@@ -1738,6 +1803,14 @@ function ArticleDetailPage({
         </aside>
         <article className="article-content">
           <div className="article-actions">
+            <button
+              className="button ghost"
+              onClick={startReplyToArticle}
+              disabled={!sessionEmail}
+            >
+              <Icon name="reply-all" />
+              回覆文章
+            </button>
             {owner && (
               <>
                 <button
@@ -1930,10 +2003,10 @@ function ArticleDetailPage({
           })()}
         {sessionEmail ? (
           <>
-            {replyTarget && (
+            {replyingTo && replyTargetName && (
               <div className="replying-banner">
                 <span>
-                  正在回覆 <b>{replyTarget.author}</b>
+                  正在回覆 <b>{replyTargetName}</b>
                 </span>
                 <button type="button" onClick={() => setReplyingTo(null)}>
                   取消回覆
@@ -1946,11 +2019,11 @@ function ArticleDetailPage({
                 onChange={setReply}
                 onImageUpload={uploadReplyImage}
                 placeholder={
-                  replyTarget ? `回覆 ${replyTarget.author}…` : "寫下你的留言…"
+                  replyTargetName ? `回覆 ${replyTargetName}…` : "寫下你的留言…"
                 }
               />
               <button className="button primary" onClick={addReply}>
-                {replyTarget ? "回覆" : "留言"}
+                {replyingTo ? "回覆" : "留言"}
               </button>
             </div>
           </>
