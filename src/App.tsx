@@ -729,7 +729,9 @@ function App() {
             >
               <Icon name="bell" />
               {unreadNotifications > 0 && (
-                <i>{unreadNotifications > 99 ? "99+" : unreadNotifications}</i>
+                <i className="notification-badge">
+                  {unreadNotifications > 99 ? "99+" : unreadNotifications}
+                </i>
               )}
             </button>
             {!authReady ? (

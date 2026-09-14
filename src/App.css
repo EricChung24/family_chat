@@ -259,7 +259,7 @@ button {
   border-radius: 50%;
   background: var(--coral);
 }
-.icon-button i {
+.icon-button .notification-badge {
   position: absolute;
   top: 0;
   right: -4px;
