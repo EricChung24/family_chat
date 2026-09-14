@@ -621,7 +621,11 @@ function App() {
                 }[item]
               }
               glyph={glyphs[item]}
-              onClick={() => setTab(item)}
+              onClick={() => {
+                setSearchQuery("");
+                setSearchOpen(false);
+                setTab(item);
+              }}
             />
           ))}
         </nav>
@@ -729,15 +733,30 @@ function App() {
           </div>
         </header>
         <div className="content-wrap">
-          {tab === "home" && (
-            <Home
+          {searchQuery.trim() ? (
+            <SearchResults
               threads={threads}
-              setTab={setTab}
-              compose={openComposer}
-              sessionName={sessionName}
+              query={searchQuery}
+              onOpen={(id) => {
+                history.pushState({}, "", `/forum/posts/${id}`);
+                setSearchQuery("");
+                setSearchOpen(false);
+                setDetailId(id);
+                setTab("discussions");
+              }}
             />
+          ) : (
+            tab === "home" && (
+              <Home
+                threads={threads}
+                setTab={setTab}
+                compose={openComposer}
+                sessionName={sessionName}
+              />
+            )
           )}
-          {tab === "discussions" &&
+          {!searchQuery.trim() &&
+            tab === "discussions" &&
             (detailId ? (
               <ArticleDetailPage
                 id={detailId}
@@ -761,20 +780,19 @@ function App() {
                 threads={threads}
                 compose={openComposer}
                 notify={notify}
-                searchQuery={searchQuery}
                 onOpen={(id) => {
                   history.pushState({}, "", `/forum/posts/${id}`);
                   setDetailId(id);
                 }}
               />
             ))}
-          {tab === "trips" && (
+          {!searchQuery.trim() && tab === "trips" && (
             <Trips notify={notify} sessionEmail={sessionEmail} />
           )}
-          {tab === "albums" && (
+          {!searchQuery.trim() && tab === "albums" && (
             <Albums notify={notify} sessionEmail={sessionEmail} />
           )}
-          {tab === "profile" && (
+          {!searchQuery.trim() && tab === "profile" && (
             <>
               <ProfileWithAvatar
                 notify={notify}
@@ -803,7 +821,11 @@ function App() {
               }[item]
             }
             glyph={glyphs[item]}
-            onClick={() => setTab(item)}
+            onClick={() => {
+              setSearchQuery("");
+              setSearchOpen(false);
+              setTab(item);
+            }}
           />
         ))}
       </nav>
@@ -1181,27 +1203,57 @@ function Home({
     </>
   );
 }
+function SearchResults({
+  threads,
+  query,
+  onOpen,
+}: {
+  threads: Thread[];
+  query: string;
+  onOpen: (id: string) => void;
+}) {
+  const normalizedQuery = query.trim().toLocaleLowerCase();
+  const results = threads.filter((thread) =>
+    `${thread.title} ${thread.body} ${thread.author}`
+      .toLocaleLowerCase()
+      .includes(normalizedQuery),
+  );
+  return (
+    <>
+      <Hero
+        kicker="文章搜尋"
+        title={`搜尋結果`}
+        copy={`關鍵字：「${query.trim()}」｜找到 ${results.length} 篇文章`}
+      />
+      <div className="thread-list expanded search-results-list">
+        {results.map((thread) => (
+          <ThreadCard
+            key={thread.id ?? thread.title}
+            thread={thread}
+            listOnly
+            onClick={() => thread.id && onOpen(thread.id)}
+          />
+        ))}
+        {results.length === 0 && (
+          <div className="empty-state">
+            <p>找不到符合的文章。</p>
+          </div>
+        )}
+      </div>
+    </>
+  );
+}
 function Discussions({
   threads,
   compose,
   notify,
-  searchQuery,
   onOpen,
 }: {
   threads: Thread[];
   compose: () => void;
   notify: (m: string) => void;
-  searchQuery: string;
   onOpen: (id: string) => void;
 }) {
-  const normalizedQuery = searchQuery.trim().toLocaleLowerCase();
-  const visibleThreads = normalizedQuery
-    ? threads.filter((thread) =>
-        `${thread.title} ${thread.body} ${thread.author}`
-          .toLocaleLowerCase()
-          .includes(normalizedQuery),
-      )
-    : threads;
   return (
     <>
       <Hero
@@ -1229,7 +1281,7 @@ function Discussions({
         </button>
       </div>
       <div className="thread-list expanded">
-        {visibleThreads.map((thread) => (
+        {threads.map((thread) => (
           <ThreadCard
             key={thread.id ?? thread.title}
             thread={thread}
@@ -1237,11 +1289,6 @@ function Discussions({
             onClick={() => thread.id && onOpen(thread.id)}
           />
         ))}
-        {visibleThreads.length === 0 && (
-          <div className="empty-state">
-            <p>找不到符合的文章。</p>
-          </div>
-        )}
       </div>
     </>
   );
