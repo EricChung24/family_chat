@@ -1468,7 +1468,11 @@ function ArticleDetailPage({
         profile.title_badge || "家庭成員",
       ]),
     );
-    const first = rows[0];
+    // The thread creator is the source of truth for the original article.
+    // Nested post order is not guaranteed by Supabase, and a reply can have
+    // an earlier/tied timestamp than the root post.
+    const first =
+      rows.find((row) => row.user_id === result.data?.created_by) ?? rows[0];
     if (!first) {
       setLoading(false);
       return;
@@ -1493,19 +1497,21 @@ function ArticleDetailPage({
       content: decodeRichHtml(first.content),
       authorId: postAuthorId,
       createdAt: result.data.created_at,
-      authorName: names.get(result.data.created_by) ?? "會員",
+      authorName: names.get(postAuthorId) ?? "會員",
       authorAvatarUrl: authorProfile?.avatar_url,
     });
     setReplies(
-      rows.slice(1).map((row) => ({
-        ...row,
-        content: decodeRichHtml(row.content),
-        author: `${names.get(row.user_id) ?? "會員"}${row.user_id === postAuthorId ? " - [ 原Po ]" : ` - [ ${badges.get(row.user_id) ?? "家庭成員"} ]`}`,
-        isOp: row.user_id === postAuthorId,
-        avatarUrl: (profiles.data ?? []).find(
-          (profile) => profile.id === row.user_id,
-        )?.avatar_url,
-      })),
+      rows
+        .filter((row) => row.id !== first.id)
+        .map((row) => ({
+          ...row,
+          content: decodeRichHtml(row.content),
+          author: `${names.get(row.user_id) ?? "會員"}${row.user_id === postAuthorId ? " - [ 原Po ]" : ` - [ ${badges.get(row.user_id) ?? "家庭成員"} ]`}`,
+          isOp: row.user_id === postAuthorId,
+          avatarUrl: (profiles.data ?? []).find(
+            (profile) => profile.id === row.user_id,
+          )?.avatar_url,
+        })),
     );
     setTitle(result.data.title);
     setContent(first.content);
