@@ -1127,6 +1127,7 @@ function Home({
               <ThreadCard
                 key={thread.title}
                 thread={thread}
+                listOnly
                 onClick={() => setTab("discussions")}
               />
             ))
