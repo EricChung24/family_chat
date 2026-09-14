@@ -1208,6 +1208,7 @@ function Discussions({
           <ThreadCard
             key={thread.id ?? thread.title}
             thread={thread}
+            listOnly
             onClick={() => thread.id && onOpen(thread.id)}
           />
         ))}
@@ -1757,10 +1758,12 @@ function ThreadCard({
   thread,
   onClick,
   compact = false,
+  listOnly = false,
 }: {
   thread: Thread;
   onClick: () => void;
   compact?: boolean;
+  listOnly?: boolean;
 }) {
   return (
     <article
@@ -1776,28 +1779,30 @@ function ThreadCard({
       />
       <div className="thread-body">
         <div className="thread-meta">
-          {thread.author} · {thread.time}
+          {thread.author}
+          {!listOnly && ` · ${thread.time}`}
           {thread.pinned && <b className="pinned">置頂</b>}
         </div>
         <h3>{thread.title}</h3>
-        {!compact && (
+        {!compact && !listOnly && (
           <div
             className="thread-rich-preview"
             dangerouslySetInnerHTML={{ __html: decodeRichHtml(thread.body) }}
           />
         )}
-        {extractHashtags(`${thread.title} ${thread.body}`).length > 0 && (
-          <div className="thread-tags" aria-label="文章標籤">
-            <span className="tag-label">分類／標籤</span>
-            {extractHashtags(`${thread.title} ${thread.body}`).map((tag) => (
-              <span className="hashtag" key={tag}>
-                {tag}
-              </span>
-            ))}
-          </div>
-        )}
+        {!listOnly &&
+          extractHashtags(`${thread.title} ${thread.body}`).length > 0 && (
+            <div className="thread-tags" aria-label="文章標籤">
+              <span className="tag-label">分類／標籤</span>
+              {extractHashtags(`${thread.title} ${thread.body}`).map((tag) => (
+                <span className="hashtag" key={tag}>
+                  {tag}
+                </span>
+              ))}
+            </div>
+          )}
         <div className="thread-footer">
-          {thread.replies} 則回覆 <Icon name="arrow-up-right" />
+          {thread.replies} 則回覆 {!listOnly && <Icon name="arrow-up-right" />}
         </div>
       </div>
     </article>
