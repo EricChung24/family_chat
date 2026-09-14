@@ -9,7 +9,7 @@ import ReactQuill from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
 import "@flaticon/flaticon-uicons/css/regular/rounded.css";
 
-type Tab = "home" | "discussions" | "trips" | "albums";
+type Tab = "home" | "discussions" | "trips" | "albums" | "weather";
 type Thread = {
   id?: string;
   title: string;
@@ -629,6 +629,7 @@ function App() {
     discussions: "家庭討論",
     trips: "下一段旅程",
     albums: "共享相簿",
+    weather: "台灣天氣",
     profile: "你的個人檔案",
   };
   const glyphs: Record<string, React.ReactNode> = {
@@ -636,6 +637,7 @@ function App() {
     discussions: <Icon name="comments" />,
     trips: <Icon name="calendar-days" />,
     albums: <Icon name="images" />,
+    weather: <Icon name="cloud-sun" />,
     profile: <Icon name="user" />,
   };
   return (
@@ -656,26 +658,29 @@ function App() {
           <Icon name="angle-small-down" />
         </button>
         <nav>
-          {(["home", "discussions", "trips", "albums"] as Tab[]).map((item) => (
-            <Nav
-              key={item}
-              active={tab === item}
-              label={
-                {
-                  home: "首頁",
-                  discussions: "討論",
-                  trips: "行程",
-                  albums: "相簿",
-                }[item]
-              }
-              glyph={glyphs[item]}
-              onClick={() => {
-                setSearchQuery("");
-                setSearchOpen(false);
-                setTab(item);
-              }}
-            />
-          ))}
+          {(["home", "discussions", "trips", "albums", "weather"] as Tab[]).map(
+            (item) => (
+              <Nav
+                key={item}
+                active={tab === item}
+                label={
+                  {
+                    home: "首頁",
+                    discussions: "討論",
+                    trips: "行程",
+                    albums: "相簿",
+                    weather: "天氣",
+                  }[item]
+                }
+                glyph={glyphs[item]}
+                onClick={() => {
+                  setSearchQuery("");
+                  setSearchOpen(false);
+                  setTab(item);
+                }}
+              />
+            ),
+          )}
         </nav>
         <div className="rail-bottom">
           <button className="nav-button" onClick={() => setProfilePanel(true)}>
@@ -845,6 +850,7 @@ function App() {
           {!searchQuery.trim() && tab === "albums" && (
             <Albums notify={notify} sessionEmail={sessionEmail} />
           )}
+          {!searchQuery.trim() && tab === "weather" && <TaiwanWeather />}
           {!searchQuery.trim() && tab === "profile" && (
             <>
               <ProfileWithAvatar
@@ -861,26 +867,29 @@ function App() {
         </div>
       </main>
       <nav className="mobile-nav">
-        {(["home", "discussions", "trips", "albums"] as Tab[]).map((item) => (
-          <Nav
-            key={item}
-            active={tab === item}
-            label={
-              {
-                home: "首頁",
-                discussions: "交流",
-                trips: "行程",
-                albums: "相簿",
-              }[item]
-            }
-            glyph={glyphs[item]}
-            onClick={() => {
-              setSearchQuery("");
-              setSearchOpen(false);
-              setTab(item);
-            }}
-          />
-        ))}
+        {(["home", "discussions", "trips", "albums", "weather"] as Tab[]).map(
+          (item) => (
+            <Nav
+              key={item}
+              active={tab === item}
+              label={
+                {
+                  home: "首頁",
+                  discussions: "交流",
+                  trips: "行程",
+                  albums: "相簿",
+                  weather: "天氣",
+                }[item]
+              }
+              glyph={glyphs[item]}
+              onClick={() => {
+                setSearchQuery("");
+                setSearchOpen(false);
+                setTab(item);
+              }}
+            />
+          ),
+        )}
       </nav>
       {compose && (
         <div className="modal-backdrop" onMouseDown={() => setCompose(false)}>
@@ -2385,7 +2394,6 @@ function Albums({
   const [pendingLocation, setPendingLocation] = useState("");
   const [pendingCaption, setPendingCaption] = useState("");
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
-  const [showWeather, setShowWeather] = useState(false);
   const missingDescription = (error: { message?: string } | null) =>
     Boolean(
       error?.message?.toLowerCase().includes("description") &&
@@ -2955,21 +2963,12 @@ function Albums({
         title="收藏小日子"
         copy="把家人想留下的每個時刻放在一起。"
         action={
-          <div className="album-hero-actions">
-            <button
-              className={`button ghost ${showWeather ? "is-active" : ""}`}
-              onClick={() => setShowWeather((value) => !value)}
-            >
-              <Icon name="cloud-sun" /> 台灣天氣
-            </button>
-            <button className="button primary" onClick={create}>
-              <Icon name="plus" />
-              新增相簿
-            </button>
-          </div>
+          <button className="button primary" onClick={create}>
+            <Icon name="plus" />
+            新增相簿
+          </button>
         }
       />
-      {showWeather && <TaiwanWeather />}
       <section className="setting-card album-editor-create">
         <label>
           相簿名稱
@@ -3042,9 +3041,25 @@ function Albums({
 function TaiwanWeather() {
   const cities = [
     { name: "台北", lat: 25.0375, lon: 121.5637 },
+    { name: "新北", lat: 25.0118, lon: 121.4658 },
+    { name: "基隆", lat: 25.1276, lon: 121.7392 },
+    { name: "桃園", lat: 24.9937, lon: 121.301 },
+    { name: "新竹", lat: 24.8138, lon: 120.9675 },
+    { name: "苗栗", lat: 24.5602, lon: 120.8214 },
     { name: "台中", lat: 24.1477, lon: 120.6736 },
+    { name: "彰化", lat: 24.0755, lon: 120.544 },
+    { name: "南投", lat: 23.9609, lon: 120.9719 },
+    { name: "雲林", lat: 23.7092, lon: 120.4313 },
+    { name: "嘉義", lat: 23.4801, lon: 120.4491 },
+    { name: "台南", lat: 22.9997, lon: 120.227 },
     { name: "高雄", lat: 22.6273, lon: 120.3014 },
+    { name: "屏東", lat: 22.5519, lon: 120.5487 },
+    { name: "宜蘭", lat: 24.757, lon: 121.7533 },
     { name: "花蓮", lat: 23.9911, lon: 121.6112 },
+    { name: "台東", lat: 22.7554, lon: 121.15 },
+    { name: "澎湖", lat: 23.5711, lon: 119.5793 },
+    { name: "金門", lat: 24.4368, lon: 118.3186 },
+    { name: "馬祖", lat: 26.1605, lon: 119.9517 },
   ];
   const [city, setCity] = useState(cities[0]);
   const [weather, setWeather] = useState<any>(null);
