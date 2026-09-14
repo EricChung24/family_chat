@@ -1371,6 +1371,8 @@ function ArticleDetailPage({
   const [content, setContent] = useState("");
   const [reply, setReply] = useState("");
   const [replyingTo, setReplyingTo] = useState<string | null>(null);
+  const [editingReplyId, setEditingReplyId] = useState<string | null>(null);
+  const [editingReplyContent, setEditingReplyContent] = useState("");
   const [liveUserId, setLiveUserId] = useState<string | null>(userId);
   const [authorBadge, setAuthorBadge] = useState("");
   const [authorPostCount, setAuthorPostCount] = useState(0);
@@ -1619,6 +1621,37 @@ function ArticleDetailPage({
       notify("留言已刪除");
     }
   };
+  const startEditReply = (item: Reply) => {
+    setEditingReplyId(item.id);
+    setEditingReplyContent(item.content);
+  };
+  const saveReplyEdit = async (item: Reply) => {
+    if (!supabase || item.user_id !== liveUserId) return;
+    const nextContent = editingReplyContent.trim();
+    if (!nextContent.replace(/<[^>]*>/g, "").trim()) {
+      notify("留言內容不能為空");
+      return;
+    }
+    const result = await supabase
+      .from("posts")
+      .update({ content: nextContent })
+      .eq("id", item.id)
+      .eq("user_id", liveUserId);
+    logSupabaseError("post.edit", result.error);
+    if (result.error) notify(result.error.message);
+    else {
+      setReplies((current) =>
+        current.map((replyItem) =>
+          replyItem.id === item.id
+            ? { ...replyItem, content: nextContent }
+            : replyItem,
+        ),
+      );
+      setEditingReplyId(null);
+      setEditingReplyContent("");
+      notify("留言已更新");
+    }
+  };
   const uploadReplyImage = async (file: File) => {
     if (!supabase || !liveUserId) {
       notify("請先登入才能上傳圖片");
@@ -1825,7 +1858,37 @@ function ArticleDetailPage({
                         <span className="comment-floor">{replyFloor}樓</span>
                       )}
                     </div>
-                    <div dangerouslySetInnerHTML={{ __html: item.content }} />
+                    {editingReplyId === item.id ? (
+                      <div className="comment-edit-form">
+                        <RichTextEditor
+                          value={editingReplyContent}
+                          onChange={setEditingReplyContent}
+                          onImageUpload={uploadReplyImage}
+                          placeholder="編輯留言內容…"
+                        />
+                        <div className="comment-edit-actions">
+                          <button
+                            className="button ghost"
+                            type="button"
+                            onClick={() => {
+                              setEditingReplyId(null);
+                              setEditingReplyContent("");
+                            }}
+                          >
+                            取消
+                          </button>
+                          <button
+                            className="button primary"
+                            type="button"
+                            onClick={() => saveReplyEdit(item)}
+                          >
+                            儲存
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div dangerouslySetInnerHTML={{ __html: item.content }} />
+                    )}
                     <div className="comment-actions">
                       <button
                         className="comment-reply-button"
@@ -1837,14 +1900,25 @@ function ArticleDetailPage({
                         回覆
                       </button>
                       {item.user_id === liveUserId && (
-                        <button
-                          className="comment-delete-button"
-                          type="button"
-                          onClick={() => deleteReply(item)}
-                        >
-                          <Icon name="trash" />
-                          刪除
-                        </button>
+                        <>
+                          <button
+                            className="comment-edit-button"
+                            type="button"
+                            onClick={() => startEditReply(item)}
+                            disabled={editingReplyId === item.id}
+                          >
+                            <Icon name="edit" />
+                            編輯
+                          </button>
+                          <button
+                            className="comment-delete-button"
+                            type="button"
+                            onClick={() => deleteReply(item)}
+                          >
+                            <Icon name="trash" />
+                            刪除
+                          </button>
+                        </>
                       )}
                     </div>
                   </div>

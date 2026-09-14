@@ -592,6 +592,36 @@
   font-size: 12px;
   cursor: pointer;
 }
+.comment-edit-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 28px;
+  padding: 4px 8px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #9dd4ff;
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+.comment-edit-button:hover:not(:disabled) {
+  background: #20496666;
+}
+.comment-edit-button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+.comment-edit-form {
+  display: grid;
+  gap: 8px;
+}
+.comment-edit-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
 .comment-delete-button:hover {
   background: #7a332d66;
 }
