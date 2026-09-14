@@ -547,6 +547,10 @@ button {
 .pinned i {
   font-size: 11px;
 }
+.pinned i:first-child {
+  color: #ffe08a;
+  filter: drop-shadow(0 0 4px #ffe08a99);
+}
 .thread-card:has(.pinned) {
   border-color: #eaa65d88;
   background: linear-gradient(135deg, #1b2a24, #17231f 72%, #392b1e);

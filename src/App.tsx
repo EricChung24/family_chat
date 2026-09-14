@@ -2146,6 +2146,7 @@ function ThreadCard({
           {!listOnly && ` · ${thread.time}`}
           {thread.pinned && (
             <b className="pinned" title="置頂文章">
+              <Icon name="star" />
               <Icon name="pin" />
               置頂
             </b>
