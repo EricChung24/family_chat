@@ -1859,7 +1859,7 @@ function ArticleDetailPage({
                 className="button ghost pin-toggle"
                 onClick={togglePinned}
               >
-                <Icon name="pin" />
+                <Icon name="star" />
                 {post.pinned ? "取消置頂" : "置頂文章"}
               </button>
             )}
