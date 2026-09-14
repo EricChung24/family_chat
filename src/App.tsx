@@ -864,18 +864,6 @@ function App() {
           />
         ))}
       </nav>
-      <aside className="music-player" aria-label="家庭音樂播放器">
-        <span className="music-player-label">正在播放</span>
-        <iframe
-          width="560"
-          height="315"
-          src="https://www.youtube.com/embed/WVuqc8eeGrw?si=lfhessuZ50akjXch&autoplay=1&mute=1&playsinline=1"
-          title="YouTube video player"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          referrerPolicy="strict-origin-when-cross-origin"
-          allowFullScreen
-        />
-      </aside>
       {compose && (
         <div className="modal-backdrop" onMouseDown={() => setCompose(false)}>
           <section
