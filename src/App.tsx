@@ -128,7 +128,7 @@ function setThreadsFromDatabase(
     created_at: string;
     pinned: boolean;
     created_by?: string;
-    posts?: Array<{ content: string }>;
+    posts?: Array<{ content: string; user_id?: string; created_at?: string }>;
   }>,
   profiles = new Map<string, ProfileInfo>(),
 ) {
@@ -137,7 +137,10 @@ function setThreadsFromDatabase(
     return {
       id: row.id,
       title: row.title,
-      body: row.posts?.[0]?.content ?? "尚無內容",
+      body:
+        row.posts?.find((post) => post.user_id === row.created_by)?.content ??
+        row.posts?.[0]?.content ??
+        "尚無內容",
       author: profile?.displayName ?? "會員",
       authorId: row.created_by,
       avatarUrl: profile?.avatarUrl,
@@ -260,7 +263,9 @@ function App() {
     const client = supabase;
     client
       .from("threads")
-      .select("id,title,created_at,pinned,created_by,posts(content,created_at)")
+      .select(
+        "id,title,created_at,pinned,created_by,posts(content,created_at,user_id)",
+      )
       .order("created_at", { ascending: false })
       .then(async ({ data, error }) => {
         if (error || !data) return;
@@ -290,7 +295,11 @@ function App() {
               created_at: string;
               pinned: boolean;
               created_by?: string;
-              posts?: Array<{ content: string }>;
+              posts?: Array<{
+                content: string;
+                user_id?: string;
+                created_at?: string;
+              }>;
             }>,
             profileMap,
           ),
@@ -570,7 +579,9 @@ function App() {
     notify("討論已分享給家人");
     const refreshed = await supabase
       .from("threads")
-      .select("id,title,created_at,pinned,created_by,posts(content,created_at)")
+      .select(
+        "id,title,created_at,pinned,created_by,posts(content,created_at,user_id)",
+      )
       .order("created_at", { ascending: false });
     logSupabaseError("threads.refresh", refreshed.error);
     if (refreshed.data) {
@@ -600,7 +611,11 @@ function App() {
             created_at: string;
             pinned: boolean;
             created_by?: string;
-            posts?: Array<{ content: string }>;
+            posts?: Array<{
+              content: string;
+              user_id?: string;
+              created_at?: string;
+            }>;
           }>,
           profileMap,
         ),
