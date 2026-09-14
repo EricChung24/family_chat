@@ -655,13 +655,13 @@ function App() {
             ) : sessionEmail ? (
               <>
                 <button
-                  className="button ghost account-button"
+                  className="button ghost account-button profile-account-button"
                   onClick={() => setProfilePanel(true)}
                 >
                   {sessionName || "會員資料"}
                 </button>
                 <button
-                  className="button ghost account-button"
+                  className="button ghost account-button logout-account-button"
                   onClick={signOut}
                 >
                   <Icon name="sign-out-alt" />
@@ -670,11 +670,12 @@ function App() {
               </>
             ) : (
               <button
-                className="button primary account-button"
+                className="button primary account-button login-account-button"
                 onClick={() => setAuthOpen(true)}
               >
                 <Icon name="sign-in-alt" />
-                登入／註冊
+                <span className="desktop-account-copy">登入／註冊</span>
+                <span className="mobile-account-copy">登入</span>
               </button>
             )}
             <button className="mobile-avatar" onClick={() => setTab("profile")}>
