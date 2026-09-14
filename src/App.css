@@ -1456,6 +1456,34 @@ body * {
   background: #111;
   border-radius: 10px;
 }
+.photo-lightbox-nav {
+  position: absolute;
+  top: 42%;
+  z-index: 2;
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border: 1px solid #ffffff55;
+  border-radius: 50%;
+  background: #111b17dd;
+  color: #fff;
+  cursor: pointer;
+  transform: translateY(-50%);
+}
+.photo-lightbox-nav:hover:not(:disabled) {
+  background: #285c4d;
+}
+.photo-lightbox-nav:disabled {
+  cursor: not-allowed;
+  opacity: 0.25;
+}
+.photo-lightbox-prev {
+  left: 32px;
+}
+.photo-lightbox-next {
+  right: 32px;
+}
 .photo-lightbox-panel label {
   display: grid;
   gap: 7px;

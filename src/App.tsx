@@ -1938,18 +1938,62 @@ function Albums({
       if (!image || !card) return;
       const existing = document.querySelector(".photo-lightbox");
       existing?.remove();
-      const details = card.querySelector(".photo-caption")?.innerHTML ?? "";
+      const images = Array.from(
+        document.querySelectorAll<HTMLImageElement>(".photo-detail-card img"),
+      );
+      let currentIndex = Math.max(images.indexOf(image), 0);
       const modal = document.createElement("div");
       modal.className = "photo-lightbox";
-      modal.innerHTML = `<div class="photo-lightbox-panel"><button class="photo-lightbox-close" aria-label="關閉"><i class="fi fi-rr-cross ui-icon" aria-hidden="true"></i></button><img src="${image.src}" alt="相簿照片"><div class="photo-lightbox-details">${details || "尚未新增地點或文字說明"}</div></div>`;
+      modal.innerHTML = `<div class="photo-lightbox-panel"><button class="photo-lightbox-close" aria-label="關閉"><i class="fi fi-rr-cross ui-icon" aria-hidden="true"></i></button><button class="photo-lightbox-nav photo-lightbox-prev" aria-label="上一張"><i class="fi fi-rr-angle-left ui-icon" aria-hidden="true"></i></button><img src="" alt="相簿照片"><button class="photo-lightbox-nav photo-lightbox-next" aria-label="下一張"><i class="fi fi-rr-angle-right ui-icon" aria-hidden="true"></i></button><div class="photo-lightbox-details"></div></div>`;
       document.body.appendChild(modal);
+      const panel = modal.querySelector(".photo-lightbox-panel") as HTMLElement;
+      const lightboxImage = panel.querySelector("img") as HTMLImageElement;
+      const detailsElement = panel.querySelector(
+        ".photo-lightbox-details",
+      ) as HTMLElement;
+      const previousButton = panel.querySelector(
+        ".photo-lightbox-prev",
+      ) as HTMLButtonElement;
+      const nextButton = panel.querySelector(
+        ".photo-lightbox-next",
+      ) as HTMLButtonElement;
+      const renderPhoto = (index: number) => {
+        const selected = images[index];
+        const selectedCard = selected?.closest(".photo-detail-card");
+        if (!selected || !selectedCard) return;
+        currentIndex = index;
+        lightboxImage.src = selected.src;
+        lightboxImage.alt = selected.alt || "相簿照片";
+        detailsElement.innerHTML =
+          selectedCard.querySelector(".photo-caption")?.innerHTML ??
+          "尚未新增地點或文字說明";
+        previousButton.disabled = currentIndex === 0;
+        nextButton.disabled = currentIndex === images.length - 1;
+      };
+      renderPhoto(currentIndex);
       modal.addEventListener("click", (click) => {
         if (
           click.target === modal ||
           (click.target as HTMLElement).closest(".photo-lightbox-close")
         )
-          modal.remove();
+          closeModal();
+        else if ((click.target as HTMLElement).closest(".photo-lightbox-prev"))
+          renderPhoto(Math.max(currentIndex - 1, 0));
+        else if ((click.target as HTMLElement).closest(".photo-lightbox-next"))
+          renderPhoto(Math.min(currentIndex + 1, images.length - 1));
       });
+      const onKeyDown = (keyboardEvent: KeyboardEvent) => {
+        if (keyboardEvent.key === "Escape") closeModal();
+        if (keyboardEvent.key === "ArrowLeft")
+          renderPhoto(Math.max(currentIndex - 1, 0));
+        if (keyboardEvent.key === "ArrowRight")
+          renderPhoto(Math.min(currentIndex + 1, images.length - 1));
+      };
+      const closeModal = () => {
+        document.removeEventListener("keydown", onKeyDown);
+        modal.remove();
+      };
+      document.addEventListener("keydown", onKeyDown);
     };
     document.addEventListener("click", openPhoto);
     return () => document.removeEventListener("click", openPhoto);
