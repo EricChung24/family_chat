@@ -1571,6 +1571,11 @@ function ArticleDetailPage({
                 (candidate) => candidate.id === item.parent_post_id,
               );
               const replyTargetName = parent?.author ?? post?.authorName;
+              const replyFloor = replies
+                .slice(0, index + 1)
+                .filter((replyItem) =>
+                  Boolean(replyItem.parent_post_id),
+                ).length;
               const next = replies[index + 1];
               const hasThreadContinuation = Boolean(
                 next && getThreadRoot(next) === getThreadRoot(item),
@@ -1597,7 +1602,9 @@ function ArticleDetailPage({
                       <small>
                         {new Date(item.created_at).toLocaleString("zh-TW")}
                       </small>
-                      <span className="comment-floor">{index + 1}樓</span>
+                      {item.parent_post_id && (
+                        <span className="comment-floor">{replyFloor}樓</span>
+                      )}
                     </div>
                     <div dangerouslySetInnerHTML={{ __html: item.content }} />
                     <div className="comment-actions">
