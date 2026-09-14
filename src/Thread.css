@@ -508,8 +508,39 @@
   border-left: 0;
 }
 .comment-main {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
   min-width: 0;
   padding-right: 0;
+}
+.comment-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px;
+  min-width: 0;
+  line-height: 1.35;
+}
+.comment-header .reply-context {
+  order: 3;
+  flex-basis: 100%;
+}
+.comment-header b {
+  flex: 0 1 auto;
+}
+.comment-header small {
+  flex: 0 0 auto;
+  margin: 0;
+}
+.comment-actions {
+  display: flex;
+  align-items: center;
+  min-height: 28px;
+}
+.comment-actions .comment-reply-button {
+  position: static;
+  margin: 0;
 }
 .article-content .article-actions {
   position: static;
@@ -609,9 +640,9 @@
   font-size: 12px;
 }
 .comment-item-reply {
-  margin-left: 38px;
-  padding-left: 14px;
-  border-left: 2px solid #65b8ff55;
+  margin-left: 0;
+  padding-left: 0;
+  border-left: 0;
 }
 .replying-banner {
   display: flex;
@@ -715,4 +746,17 @@
   .ql-toolbar.ql-snow .ql-formats {
     margin-right: 7px;
   }
+}
+
+/* Keep every reply in one shared rail; controls belong below the content. */
+.comment-item-reply {
+  margin-left: 0;
+  padding-left: 0;
+  border-left: 0;
+}
+.comment-actions .comment-reply-button {
+  position: static;
+  top: auto;
+  right: auto;
+  margin: 0;
 }

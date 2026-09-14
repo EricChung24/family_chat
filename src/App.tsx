@@ -1554,23 +1554,29 @@ function ArticleDetailPage({
                   />
                 </div>
                 <div className="comment-main">
-                  {parent && (
-                    <span className="reply-context">回覆 {parent.author}</span>
-                  )}
-                  <b>{item.author}</b>
-                  <small>
-                    {new Date(item.created_at).toLocaleString("zh-TW")}
-                  </small>
+                  <div className="comment-header">
+                    {parent && (
+                      <span className="reply-context">
+                        回覆 {parent.author}
+                      </span>
+                    )}
+                    <b>{item.author}</b>
+                    <small>
+                      {new Date(item.created_at).toLocaleString("zh-TW")}
+                    </small>
+                  </div>
                   <div dangerouslySetInnerHTML={{ __html: item.content }} />
-                  <button
-                    className="comment-reply-button"
-                    type="button"
-                    onClick={() => startReply(item)}
-                    disabled={!sessionEmail}
-                  >
-                    <Icon name="reply-all" />
-                    回覆
-                  </button>
+                  <div className="comment-actions">
+                    <button
+                      className="comment-reply-button"
+                      type="button"
+                      onClick={() => startReply(item)}
+                      disabled={!sessionEmail}
+                    >
+                      <Icon name="reply-all" />
+                      回覆
+                    </button>
+                  </div>
                 </div>
               </div>
             );
