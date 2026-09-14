@@ -159,6 +159,7 @@ function App() {
   const [compose, setCompose] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [musicOpen, setMusicOpen] = useState(false);
   const [toast, setToast] = useState("");
   const [profilePanel, setProfilePanel] = useState(false);
   const [authOpen, setAuthOpen] = useState(false);
@@ -864,6 +865,26 @@ function App() {
           />
         ))}
       </nav>
+      <aside className={`music-player ${musicOpen ? "is-open" : ""}`}>
+        <button
+          className="music-player-toggle"
+          type="button"
+          onClick={() => setMusicOpen((current) => !current)}
+          aria-label={musicOpen ? "收合音樂播放器" : "開啟音樂播放器"}
+          aria-expanded={musicOpen}
+        >
+          <Icon name="music" />
+        </button>
+        {musicOpen && (
+          <iframe
+            src="https://www.youtube.com/embed/WVuqc8eeGrw?si=lfhessuZ50akjXch&autoplay=1&mute=1&playsinline=1"
+            title="家庭音樂播放器"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerPolicy="strict-origin-when-cross-origin"
+            allowFullScreen
+          />
+        )}
+      </aside>
       {compose && (
         <div className="modal-backdrop" onMouseDown={() => setCompose(false)}>
           <section
