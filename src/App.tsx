@@ -2279,7 +2279,11 @@ function Albums({
     const file = event.target.files?.[0];
     event.target.value = "";
     if (!file || !selectedId) return;
-    if (!file.type.startsWith("image/") || file.size > 8 * 1024 * 1024) {
+    if (
+      (!file.type.startsWith("image/") &&
+        !["image/heic", "image/heif"].includes(file.type)) ||
+      file.size > 8 * 1024 * 1024
+    ) {
       notify("請選擇 8MB 以下的圖片");
       return;
     }
@@ -2409,7 +2413,7 @@ function Albums({
               新增照片
               <input
                 type="file"
-                accept="image/png,image/jpeg,image/webp"
+                accept="image/png,image/jpeg,image/webp,image/heic,image/heif"
                 onChange={uploadPhoto}
               />
             </label>
