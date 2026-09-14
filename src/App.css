@@ -220,6 +220,19 @@ button {
   gap: 8px;
   align-items: center;
 }
+.top-search-input {
+  width: min(220px, 28vw);
+  min-height: 38px;
+  padding: 8px 11px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--white);
+  color: var(--ink);
+  outline: none;
+}
+.top-search-input:focus {
+  border-color: var(--forest);
+}
 .icon-button {
   width: 36px;
   height: 36px;

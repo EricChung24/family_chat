@@ -157,6 +157,8 @@ function App() {
   const [draftCategory, setDraftCategory] = useState("日常");
   const [draftTags, setDraftTags] = useState("");
   const [compose, setCompose] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const [toast, setToast] = useState("");
   const [profilePanel, setProfilePanel] = useState(false);
   const [authOpen, setAuthOpen] = useState(false);
@@ -667,10 +669,21 @@ function App() {
             <b>{titles[tab]}</b>
           </div>
           <div className="top-actions">
+            {searchOpen && (
+              <input
+                className="top-search-input"
+                value={searchQuery}
+                onChange={(event) => setSearchQuery(event.target.value)}
+                placeholder="搜尋文章…"
+                aria-label="搜尋文章"
+                autoFocus
+              />
+            )}
             <button
-              className="icon-button"
-              onClick={() => notify("搜尋功能已準備好")}
-              aria-label="搜尋"
+              className={`icon-button ${searchOpen ? "active" : ""}`}
+              onClick={() => setSearchOpen((current) => !current)}
+              aria-label="搜尋文章"
+              aria-expanded={searchOpen}
             >
               <Icon name="search" />
             </button>
@@ -748,6 +761,7 @@ function App() {
                 threads={threads}
                 compose={openComposer}
                 notify={notify}
+                searchQuery={searchQuery}
                 onOpen={(id) => {
                   history.pushState({}, "", `/forum/posts/${id}`);
                   setDetailId(id);
@@ -1171,13 +1185,23 @@ function Discussions({
   threads,
   compose,
   notify,
+  searchQuery,
   onOpen,
 }: {
   threads: Thread[];
   compose: () => void;
   notify: (m: string) => void;
+  searchQuery: string;
   onOpen: (id: string) => void;
 }) {
+  const normalizedQuery = searchQuery.trim().toLocaleLowerCase();
+  const visibleThreads = normalizedQuery
+    ? threads.filter((thread) =>
+        `${thread.title} ${thread.body} ${thread.author}`
+          .toLocaleLowerCase()
+          .includes(normalizedQuery),
+      )
+    : threads;
   return (
     <>
       <Hero
@@ -1205,7 +1229,7 @@ function Discussions({
         </button>
       </div>
       <div className="thread-list expanded">
-        {threads.map((thread) => (
+        {visibleThreads.map((thread) => (
           <ThreadCard
             key={thread.id ?? thread.title}
             thread={thread}
@@ -1213,6 +1237,11 @@ function Discussions({
             onClick={() => thread.id && onOpen(thread.id)}
           />
         ))}
+        {visibleThreads.length === 0 && (
+          <div className="empty-state">
+            <p>找不到符合的文章。</p>
+          </div>
+        )}
       </div>
     </>
   );
