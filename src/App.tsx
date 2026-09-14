@@ -68,6 +68,7 @@ function RichTextEditor({
   const modules = {
     toolbar: {
       container: [
+        [{ header: [1, 2, 3, false] }],
         ["bold", "italic", "underline", "strike"],
         [{ font: [] }, { size: ["small", false, "large", "huge"] }],
         [{ color: [] }, { background: [] }],
