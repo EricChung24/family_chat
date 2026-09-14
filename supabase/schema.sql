@@ -82,9 +82,9 @@ create policy "members create family threads" on public.threads for insert to au
 create policy "authors update own threads" on public.threads for update to authenticated using (created_by = auth.uid() and family_id = public.my_family_id()) with check (created_by = auth.uid() and family_id = public.my_family_id());
 create policy "authors delete own threads" on public.threads for delete to authenticated using (created_by = auth.uid() and family_id = public.my_family_id());
 create policy "members read family posts" on public.posts for select to authenticated using (exists (select 1 from public.threads t where t.id = thread_id and t.family_id = public.my_family_id()));
-create policy "members create family posts" on public.posts for insert to authenticated with check (author_id = auth.uid() and exists (select 1 from public.threads t where t.id = thread_id and t.family_id = public.my_family_id()));
-create policy "authors update own posts" on public.posts for update to authenticated using (author_id = auth.uid()) with check (author_id = auth.uid());
-create policy "authors delete own posts" on public.posts for delete to authenticated using (author_id = auth.uid());
+create policy "members create family posts" on public.posts for insert to authenticated with check (user_id = auth.uid() and exists (select 1 from public.threads t where t.id = thread_id and t.family_id = public.my_family_id()));
+create policy "authors update own posts" on public.posts for update to authenticated using (user_id = auth.uid()) with check (user_id = auth.uid());
+create policy "authors delete own posts" on public.posts for delete to authenticated using (user_id = auth.uid());
 create policy "members manage family itineraries" on public.itineraries for all to authenticated using (family_id = public.my_family_id()) with check (family_id = public.my_family_id() and created_by = auth.uid());
 create policy "members manage itinerary items" on public.itinerary_items for all to authenticated using (exists (select 1 from public.itineraries i where i.id = itinerary_id and i.family_id = public.my_family_id())) with check (exists (select 1 from public.itineraries i where i.id = itinerary_id and i.family_id = public.my_family_id()));
 create policy "members manage family albums" on public.albums for all to authenticated using (family_id = public.my_family_id()) with check (family_id = public.my_family_id());
