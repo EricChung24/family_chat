@@ -502,6 +502,18 @@
 .comment-thread-line.is-visible {
   opacity: 1;
 }
+.comment-thread-line.is-visible::after {
+  position: absolute;
+  right: 50%;
+  bottom: -1px;
+  width: 0;
+  height: 0;
+  border-top: 6px solid #87948d;
+  border-right: 4px solid transparent;
+  border-left: 4px solid transparent;
+  content: "";
+  transform: translateX(50%);
+}
 .comment-item-reply {
   margin-left: 0;
   padding-left: 0;
@@ -534,6 +546,10 @@
   color: #c9ded3;
   font-size: 12px;
   line-height: 1.35;
+}
+.comment-header .reply-context::before {
+  content: "↳ ";
+  color: #f0d6a8;
 }
 .comment-header b {
   flex: 0 1 auto;
