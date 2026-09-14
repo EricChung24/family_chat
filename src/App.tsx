@@ -1421,6 +1421,7 @@ function ArticleDetailPage({
   const [replyingTo, setReplyingTo] = useState<string | null>(null);
   const [editingReplyId, setEditingReplyId] = useState<string | null>(null);
   const [editingReplyContent, setEditingReplyContent] = useState("");
+  const [showDanmaku, setShowDanmaku] = useState(false);
   const [liveUserId, setLiveUserId] = useState<string | null>(userId);
   const [authorBadge, setAuthorBadge] = useState("");
   const [authorPostCount, setAuthorPostCount] = useState(0);
@@ -1871,6 +1872,15 @@ function ArticleDetailPage({
               <Icon name="reply-all" />
               回覆文章
             </button>
+            <button
+              className={`button ghost danmaku-toggle ${showDanmaku ? "is-active" : ""}`}
+              onClick={() => setShowDanmaku((value) => !value)}
+              disabled={replies.length === 0}
+              aria-pressed={showDanmaku}
+            >
+              <Icon name="play-alt" />
+              {showDanmaku ? "關閉彈幕" : "開啟彈幕"}
+            </button>
             {owner && (
               <>
                 <button
@@ -1916,6 +1926,26 @@ function ArticleDetailPage({
                 className="modal-body article-body"
                 dangerouslySetInnerHTML={{ __html: post.content }}
               />
+              {showDanmaku && replies.length > 0 && (
+                <div className="danmaku-layer" aria-label="留言彈幕">
+                  {replies.slice(0, 12).map((item, index) => (
+                    <span
+                      className="danmaku-item"
+                      key={item.id}
+                      style={
+                        {
+                          "--danmaku-top": `${8 + (index % 6) * 14}%`,
+                          "--danmaku-delay": `${(index % 6) * 1.8}s`,
+                          "--danmaku-duration": `${16 + (index % 5) * 2}s`,
+                        } as React.CSSProperties
+                      }
+                    >
+                      <b>{item.author.split(" - ")[0]}</b>
+                      {item.content.replace(/<[^>]*>/g, " ").trim()}
+                    </span>
+                  ))}
+                </div>
+              )}
               {extractHashtags(`${post.title} ${post.content}`).length > 0 && (
                 <div className="article-tags" aria-label="文章標籤">
                   <span className="tag-label">分類／標籤</span>
