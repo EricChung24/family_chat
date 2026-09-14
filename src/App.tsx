@@ -1473,7 +1473,7 @@ function ArticleDetailPage({
       setLoading(false);
       return;
     }
-    const postAuthorId = result.data.created_by;
+    const postAuthorId = first.user_id;
     const authorProfile = (profiles.data ?? []).find(
       (profile) => profile.id === postAuthorId,
     );
@@ -1491,7 +1491,7 @@ function ArticleDetailPage({
       id: first.id,
       title: result.data.title,
       content: decodeRichHtml(first.content),
-      authorId: result.data.created_by,
+      authorId: postAuthorId,
       createdAt: result.data.created_at,
       authorName: names.get(result.data.created_by) ?? "會員",
       authorAvatarUrl: authorProfile?.avatar_url,
@@ -1563,13 +1563,18 @@ function ArticleDetailPage({
       .from("posts")
       .update({ content: content.trim() })
       .eq("id", post.id)
-      .eq("user_id", liveUserId);
+      .select("id,content")
+      .maybeSingle();
     logSupabaseError("post.update", postUpdate.error);
-    if (postUpdate.error) {
-      notify(postUpdate.error.message);
+    if (postUpdate.error || !postUpdate.data) {
+      notify(postUpdate.error?.message ?? "文章內容未更新，請確認你是文章作者");
       return;
     }
-    setPost({ ...post, title: title.trim(), content: content.trim() });
+    setPost({
+      ...post,
+      title: title.trim(),
+      content: decodeRichHtml(postUpdate.data.content),
+    });
     setEditing(false);
     notify("文章已更新");
   };
