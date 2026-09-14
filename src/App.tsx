@@ -358,13 +358,15 @@ function App() {
     }
     const memberName =
       authMode === "signup" ? displayName.trim() : email.trim().split("@")[0];
-    const bootstrap = await supabase.rpc("bootstrap_family", {
-      p_display_name: memberName,
-    });
-    if (bootstrap.error) {
-      notify(`會員資料同步失敗：${bootstrap.error.message}`);
-      setAuthBusy(false);
-      return;
+    if (authMode === "signup") {
+      const bootstrap = await supabase.rpc("bootstrap_family", {
+        p_display_name: memberName,
+      });
+      if (bootstrap.error) {
+        notify(`會員資料同步失敗：${bootstrap.error.message}`);
+        setAuthBusy(false);
+        return;
+      }
     }
     notify(authMode === "login" ? "登入成功" : "註冊成功");
     setSessionEmail(result.data.user.email ?? email.trim());
